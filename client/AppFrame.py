@@ -1,11 +1,14 @@
-__author__ = 'sdiemert'
+G__author__ = 'sdiemert'
 
 import wx
 
 
 class AppFrame(wx.Frame):
-    def __init__(self, parent, title, controller):
+
+    def __init__(self, parent, title, controller=None):
         wx.Frame.__init__(self, parent, title=title, size=(800, 600))
+
+        self.controller = controller
 
         self.SetMaxSize(wx.Size(800, 600))
 
@@ -51,7 +54,7 @@ class AppFrame(wx.Frame):
         wrapper.Fit(self)
 
         # Bind action handlers to UI elements:
-        self.Bind(wx.EVT_BUTTON, self.on_upload_action, self.upload_button)
+        self.Bind(wx.EVT_BUTTON, self._on_upload_action, self.upload_button)
 
         self.CreateStatusBar()
 
@@ -66,7 +69,10 @@ class AppFrame(wx.Frame):
 
         self.Show(True)
 
-    def on_upload_action(self, event):
+    def set_controller(self, controller):
+        self.controller = controller
+
+    def _on_upload_action(self, event):
         """
         Handles the case where the upload button is pressed.
 
@@ -75,3 +81,10 @@ class AppFrame(wx.Frame):
         """
         print "Upload button clicked!"
 
+        if not self.controller:
+            raise RuntimeError("Controller not set, Upload button click not handled.")
+        else:
+            self.controller.upload("foobar")
+
+    def display_message(self, s):
+        self.output.AppendText(s+"\n")
