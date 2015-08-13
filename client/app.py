@@ -8,7 +8,6 @@ class MyFrame(wx.Frame):
         self.SetMaxSize(wx.Size(800, 600))
 
         self.display = wx.Panel(self, wx.ID_ANY)
-        # self.bottomPanel = wx.Panel(self, wx.ID_ANY)
 
         self.title = wx.StaticText(self.display, wx.ID_ANY, "Clicker Client")
         self.divider = wx.StaticLine(self.display, wx.ID_ANY)

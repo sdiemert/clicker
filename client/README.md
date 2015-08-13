@@ -5,3 +5,11 @@ This is directory holds the client component of the [https://github.com/sdiemert
 ## Component Structure
 
 Coming Soon....
+
+## Dependencies
+
+This application can be compiled into a standalone Windows or OSX application with [https://github.com/pyinstaller/pyinstaller/wiki](PyInstaller).
+
+If you want to run this application from source, your environment will require the following dependencies:
+
+* [http://www.wxpython.org/](wxPython) - graphical user interface library.
