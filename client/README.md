@@ -13,3 +13,4 @@ This application can be compiled into a standalone Windows or OSX application wi
 If you want to run this application from source, your environment will require the following dependencies:
 
 * [wxPython](http://www.wxpython.org/) - graphical user interface library.
+* [pySerial](http://pyserial.sourceforge.net/pyserial.html) - interface with embedded clicker device.

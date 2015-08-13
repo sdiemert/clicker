@@ -1,4 +1,4 @@
-G__author__ = 'sdiemert'
+__author__ = 'sdiemert'
 
 import wx
 
