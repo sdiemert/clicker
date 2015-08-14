@@ -1,4 +1,8 @@
+#include <stdint.h>
 #include "Time.h"
+#include "const.h"
+#include "types.h"
+#include "client_interface.h"
 
 int BUTTON1 = 4;
 int BUTTON2 = 3;
@@ -15,6 +19,8 @@ int LED3 = 9;
 time_t events[150]; 
 int events_count = 0; 
 
+ClientInterface * client; 
+
 void setup() {
 
   //Set up some pins here. 
@@ -29,6 +35,8 @@ void setup() {
   setTime(12, 30, 30, 15, 10, 2015);
 
   Serial.begin(9600);
+
+  client = new ClientInterface(&Serial);
  
 }
 
@@ -47,8 +55,8 @@ void loop() {
         //they have just pressed the button.
         events[events_count] = now();
         events_count++;
-        delay(100); //this delay helps reduce noisey presses. 
-        Serial.println(events_count);
+        delay(200); //this delay helps reduce noisey presses. 
+        //Serial.println(events_count);
         
     }
 
@@ -75,7 +83,13 @@ void loop() {
     digitalWrite(LED2, LOW);
   
   }
- 
+
+    packet_t packet;
+    packet.bytes = "abcd";
+    packet.length = 5; 
+    packet.seq = 0;
+    packet.ack = 0; 
+    packet.type = INIT; 
 
   if(Serial.available()>0){
 
@@ -83,23 +97,23 @@ void loop() {
 
      digitalWrite(LED2, HIGH);
 
-     for(int i = 0; i < events_count; i ++){
+     for(int i = 0; i < events_count; i++){
 
-        //these prints can be replaced with a more compact protocol. 
-        Serial.print(i);
-        Serial.print(" : ");
+        client->send_packet(&packet); 
 
+         /*
         Serial.print(year(events[i]));
         Serial.print("-");
         Serial.print(month(events[i]));
         Serial.print("-");
         Serial.print(day(events[i]));
-        Serial.print(" ");
+        Serial.print("_");
         Serial.print(hour(events[i]));
         Serial.print(":");
         Serial.print(minute(events[i]));
         Serial.print(":");
         Serial.println(second(events[i]));
+        */
         
       }
   
