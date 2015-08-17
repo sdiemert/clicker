@@ -2,12 +2,12 @@ __author__ = 'sdiemert'
 
 import platform
 import re
-import os
 import serial  # usb serial interface.
 import serial.tools
 import serial.tools.list_ports
 import struct
 import Packet
+from datetime import datetime
 
 
 class SerialInterface:
@@ -74,7 +74,6 @@ class SerialInterface:
             # < in the fmt string of the unpack_from()
             # tells struct library to use little endian...
             x = struct.unpack_from("<bbbbbbbI", s)
-            print x
         except:
             print "unable to read packet!"
             return None
@@ -91,6 +90,31 @@ class SerialInterface:
         p.year = int(x[7])
 
         return p
+
+    def send_packet(self, p):
+
+        x = struct.pack("<bbbbbbbI", p.seq, p.ack, p.type, p.min, p.hour, p.day, p.month, p.year)
+
+        print "SENDING: "+str(p)
+
+        self.conn.write(x)
+
+    def send_date(self):
+
+        current_time = datetime.today()
+
+        t = Packet.TimePacket()
+
+        t.seq = 0
+        t.ack = 0
+        t.type = Packet.TIME
+        t.min = current_time.minute
+        t.hour = current_time.hour
+        t.day = current_time.day
+        t.month = current_time.month
+        t.year = current_time.year
+
+        self.send_packet(t)
 
     def connect(self, port):
 
@@ -110,8 +134,14 @@ class SerialInterface:
                     break
 
                 if not p.is_complete():
-                    print "Received in complete packet!"
+                    print "Received incomplete packet!"
                     break
+
+                print p
+
+                if p.is_data_done():
+                    print "Received data done packet!"
+                    self.send_date()
 
                 if p.is_term():
                     print "Received termination packet! Ending communications..."
@@ -125,7 +155,6 @@ class SerialInterface:
             print "port: " + port + " failed port check"
             self.conn.close()
             return False
-
 
 if __name__ == '__main__':
     s = SerialInterface()

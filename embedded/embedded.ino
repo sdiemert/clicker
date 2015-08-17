@@ -21,6 +21,8 @@ uint8_t LED3 = 9;
 time_t events[150];
 uint8_t events_count = 0;
 
+packet_t sync_packet;
+
 ClientInterface *client;
 
 void setup() {
@@ -36,8 +38,6 @@ void setup() {
 
     setTime(12, 30, 30, 15, 10, 2015);
 
-    //Serial.begin(9600);
-
     client = new ClientInterface(&Serial);
 
 }
@@ -45,11 +45,16 @@ void setup() {
 void loop() {
 
     digitalWrite(LED3, HIGH);
-    if(client->send_events(events, events_count)){
+
+    if(client->send_events(events, events_count, &sync_packet)){
 
         events_count = 0;
 
+        //syncronize the embedded clock with the host.
+        setTime(sync_packet.time.hour,sync_packet.time.min, 0, sync_packet.time.day, sync_packet.time.month, (int)sync_packet.time.year);
+
     }
+
     digitalWrite(LED3, LOW);
 
 

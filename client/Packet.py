@@ -15,6 +15,26 @@ class Packet:
         self.ack = None
         self.type = None
 
+    def type_name(self):
+        if self.type is None:
+            return None
+        elif self.type == 0:
+            return "INIT"
+        elif self.type == 1:
+            return "ACCEPT"
+        elif self.type == 2:
+            return "GO"
+        elif self.type == 3:
+            return "DATA"
+        elif self.type == 4:
+            return "TIME"
+        elif self.type == 5:
+            return "DONE"
+        elif self.type == 6:
+            return "TERM"
+        else:
+            return None
+
     def is_term(self):
         if self.type == TERM:
             return True
@@ -30,6 +50,12 @@ class Packet:
             return False
         else:
             return True
+
+    def is_data_done(self):
+        if self.type and self.type == DONE:
+            return True
+        else:
+            return False
 
 
 class TimePacket(Packet):
@@ -63,7 +89,7 @@ class TimePacket(Packet):
         s = "< TimedPacket : { "
         s += "seq:" + str(self.seq) + ", "
         s += "ack:" + str(self.ack) + ", "
-        s += "type:" + str(self.type) + ", "
+        s += "type:" + self.type_name() + ", "
         s += "min:" + str(self.min) + ", "
         s += "hour:" + str(self.hour) + ", "
         s += "day:" + str(self.day) + ", "

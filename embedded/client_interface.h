@@ -11,19 +11,33 @@
 /**
  * A class that communicates events to an external client. 
  */
-class ClientInterface{
-    public:
-        ClientInterface(HardwareSerial * serial);
-        uint8_t send_events(time_t *events, uint8_t count);
-    private:
-        uint8_t check_available();
-        uint8_t send_end();
-        void send_packet(packet_t * p);
-        void init_packet(packet_t * p);
-        HardwareSerial * hw;
-        unsigned long rate;
-        uint8_t seq;
-        void reset();
+class ClientInterface {
+
+public:
+
+    ClientInterface(HardwareSerial *serial);
+
+    uint8_t send_events(time_t *events, uint8_t count, packet_t * sync);
+
+private:
+
+    uint8_t check_available();
+
+    uint8_t send_end();
+
+    uint8_t send_packet(packet_t *p);
+
+    uint8_t init_packet(packet_t *p);
+
+    uint8_t read_packet(packet_t *p);
+
+    uint8_t send_end_of_data();
+
+    void reset();
+
+    HardwareSerial *hw;
+    unsigned long rate;
+    uint8_t seq;
 };
 
 #endif 
