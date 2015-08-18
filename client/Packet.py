@@ -8,6 +8,8 @@ TIME = 4
 DONE = 5
 TERM = 6
 
+import Data
+
 
 class Packet:
     def __init__(self):
@@ -57,6 +59,12 @@ class Packet:
         else:
             return False
 
+    def is_data(self):
+        if self.type and self.type == DATA:
+            return True
+        else:
+            return False
+
 
 class TimePacket(Packet):
     def __init__(self):
@@ -98,3 +106,11 @@ class TimePacket(Packet):
         s += " } >"
 
         return s
+
+    def get_data(self):
+
+        if not self.is_complete():
+            return None
+
+        else:
+            return Data.Data(None, self.min, self.hour, self.day, self.month, self.year)

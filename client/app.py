@@ -11,4 +11,6 @@ frame = AppFrame(None, "Clicker Uploader")
 frame.set_controller(control)
 control.set_view(frame)
 
+frame.populate()
+
 app.MainLoop()

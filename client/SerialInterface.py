@@ -11,17 +11,35 @@ from datetime import datetime
 
 
 class SerialInterface:
-    def __init__(self, portName=None):
+    def __init__(self, view=None, portName=None):
+        self.view = view
         self.port = portName
         self.conn = None
+        self.data = []
 
-    def _get_available_serial_ports(self):
+    def set_view(self, v):
+        self.view = v
+
+    def output(self, message, level=1):
+        if self.view:
+            self.view.display_message(message, level)
+
+    def get_available_serial_ports(self):
 
         to_return = list()
         for t in serial.tools.list_ports.comports():
             to_return.append(t[0])
 
         return to_return
+
+    def add_data(self, d):
+        self.data.append(d)
+
+    def get_data(self):
+        return self.data
+
+    def store_packet_data(self,p):
+        self.add_data(p.get_data())
 
     def _check_port(self, p):
         """
@@ -33,14 +51,14 @@ class SerialInterface:
         # Check the system type and if the port name matches the system type
 
         sys = platform.system()
-        print self._get_available_serial_ports()
+        print self.get_available_serial_ports()
 
         if sys == "Windows":
             # Windows system, check that we are operating on COM ports
             # TODO: Update this to work on windows
             if re.search(".*COM.*", sys):
                 # Check that the serial port we just validated actually exists.
-                return p in self._get_available_serial_ports()
+                return p in self.get_available_serial_ports()
             else:
                 return False
 
@@ -53,7 +71,7 @@ class SerialInterface:
 
             if re.search("/dev/(cu|tty)\\..*", p):
                 # Check that the serial port we just validated actually exists.
-                return p in self._get_available_serial_ports()
+                return p in self.get_available_serial_ports()
         else:
             print "Could not find system type"
             return False
@@ -97,6 +115,8 @@ class SerialInterface:
 
         print "SENDING: "+str(p)
 
+        self.output("SENDING: "+str(p))
+
         self.conn.write(x)
 
     def send_date(self):
@@ -118,43 +138,63 @@ class SerialInterface:
 
     def connect(self, port):
 
+        return_status = False
+
         if self._check_port(port):
 
             self.port = port
 
-            self.conn = serial.Serial(self.port, timeout=2)
-            self.conn.write('$')
+            print "Beginning protocol"
+            self.output("Beginning communication protocol with Arduino")
 
-            p = self.read_packet()
-
-            while p:
-
-                if not p:
-                    print "received invalid packet!"
-                    break
-
-                if not p.is_complete():
-                    print "Received incomplete packet!"
-                    break
-
-                print p
-
-                if p.is_data_done():
-                    print "Received data done packet!"
-                    self.send_date()
-
-                if p.is_term():
-                    print "Received termination packet! Ending communications..."
-                    break
+            try:
+                self.conn = serial.Serial(self.port, timeout=2)
+                self.conn.write('$')
 
                 p = self.read_packet()
 
-            self.conn.close()
+                while p:
 
+                    if not p:
+                        print "received invalid packet!"
+                        break
+
+                    if not p.is_complete():
+                        print "Received incomplete packet!"
+                        break
+
+                    print "RECEIVED: "+str(p)
+                    self.output("RECEIVED: "+str(p))
+
+                    if p.is_data():
+                        self.store_packet_data(p)
+
+                    if p.is_data_done():
+                        print "Received data done packet!"
+                        self.send_date()
+
+                    if p.is_term():
+                        print "Received termination packet! Ending communications..."
+                        self.output("Received termination packet from Arduino. Completing communications")
+                        return_status = True
+                        break
+
+                    p = self.read_packet()
+
+                self.output("Completed communication with Arduino.", 1)
+                self.conn.close()
+
+            except OSError:
+                print "Error cannot connect to device"
+                self.output("Could not connect to Arduino on port: "+port, 2)
+                return False
         else:
             print "port: " + port + " failed port check"
+            self.output("Port: "+port+" is invalid! Try another one", 2)
             self.conn.close()
             return False
+
+        return return_status
 
 if __name__ == '__main__':
     s = SerialInterface()
