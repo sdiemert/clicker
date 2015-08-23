@@ -11,7 +11,6 @@ class Controller:
         """
 
         self.view = view
-        self.serial = None
         self.serial = SerialInterface(view=self.view)
         self.data = []
 
@@ -47,7 +46,8 @@ class Controller:
         return result
 
     def reset(self):
-        pass
+        self.data = []
+        self.serial.reset()
 
     def show_data(self):
 

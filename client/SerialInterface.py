@@ -78,8 +78,8 @@ class SerialInterface:
 
     def read_packet(self):
 
-        # packet has 11 bytes.
-        s = self.conn.read(11)
+        # packet has 12 bytes.
+        s = self.conn.read(12)
 
         if not s:
             print "read() returned :" + str(s) + ": returning None from read_packet()"
@@ -87,13 +87,19 @@ class SerialInterface:
 
         x = None
 
+        for c in s:
+            print ord(c),
+
+        print ""
+
         try:
             # Arduino uses Little Endian format
             # < in the fmt string of the unpack_from()
             # tells struct library to use little endian...
-            x = struct.unpack_from("<bbbbbbbI", s)
-        except:
-            print "unable to read packet!"
+            x = struct.unpack_from("<bbbbbbbbI", s)
+        except Exception as e:
+            print "Unable to read packet! Error was: "
+            print e
             return None
 
         p = Packet.TimePacket()
@@ -101,17 +107,18 @@ class SerialInterface:
         p.seq = int(x[0])
         p.ack = int(x[1])
         p.type = int(x[2])
-        p.min = int(x[3])
-        p.hour = int(x[4])
-        p.day = int(x[5])
-        p.month = int(x[6])
-        p.year = int(x[7])
+        p.action = int(x[3])
+        p.min = int(x[4])
+        p.hour = int(x[5])
+        p.day = int(x[6])
+        p.month = int(x[7])
+        p.year = int(x[8])
 
         return p
 
     def send_packet(self, p):
 
-        x = struct.pack("<bbbbbbbI", p.seq, p.ack, p.type, p.min, p.hour, p.day, p.month, p.year)
+        x = struct.pack("<bbbbbbbbI", p.seq, p.ack, p.type, p.action, p.min, p.hour, p.day, p.month, p.year)
 
         print "SENDING: "+str(p)
 
@@ -128,6 +135,7 @@ class SerialInterface:
         t.seq = 0
         t.ack = 0
         t.type = Packet.TIME
+        t.action = 0
         t.min = current_time.minute
         t.hour = current_time.hour
         t.day = current_time.day
@@ -195,6 +203,10 @@ class SerialInterface:
             return False
 
         return return_status
+
+    def reset(self):
+        self.conn = None
+        self.data = []
 
 if __name__ == '__main__':
     s = SerialInterface()

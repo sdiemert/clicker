@@ -17,7 +17,7 @@ public:
 
     ClientInterface(HardwareSerial *serial);
 
-    uint8_t send_events(time_t *events, uint8_t count, packet_t * sync);
+    uint8_t send_events(event_t *events, uint8_t count, packet_t * sync);
 
 private:
 

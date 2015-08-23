@@ -16,6 +16,7 @@ class Packet:
         self.seq = None
         self.ack = None
         self.type = None
+        self.action = None
 
     def type_name(self):
         if self.type is None:
@@ -45,6 +46,8 @@ class Packet:
 
     def is_complete(self):
         if self.seq is None:
+            return False
+        elif self.action is None:
             return False
         elif self.ack is None:
             return False
@@ -98,6 +101,7 @@ class TimePacket(Packet):
         s += "seq:" + str(self.seq) + ", "
         s += "ack:" + str(self.ack) + ", "
         s += "type:" + self.type_name() + ", "
+        s += "action:" + str(self.action) + ", "
         s += "min:" + str(self.min) + ", "
         s += "hour:" + str(self.hour) + ", "
         s += "day:" + str(self.day) + ", "
@@ -113,4 +117,4 @@ class TimePacket(Packet):
             return None
 
         else:
-            return Data.Data(None, self.min, self.hour, self.day, self.month, self.year)
+            return Data.Data(self.action, self.min, self.hour, self.day, self.month, self.year)

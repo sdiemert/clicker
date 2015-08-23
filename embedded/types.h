@@ -2,7 +2,9 @@
 #define TYPES_H
 
 #include <stdint.h>
+
 #include "const.h"
+#include "Time.h"
 
 typedef struct {
     uint8_t min;
@@ -16,8 +18,14 @@ typedef struct {
     uint8_t seq;
     uint8_t ack;
     uint8_t type;
+    uint8_t action;
     time_packet_t time;
 } packet_t;
+
+typedef struct {
+    uint8_t action;
+    time_t time;
+} event_t;
 
 
 #endif 
