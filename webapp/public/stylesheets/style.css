@@ -1,0 +1,85 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#landing-main {
+    background-image : url("../images/background.png");
+    background-repeat: no-repeat;
+    background-size : auto auto;
+    background-position: 0px -100px;
+    min-height:800px;
+    max-height:800px;
+    min-width:800px;
+}
+
+#main{
+    min-height:800px;
+    max-height:800px;
+    min-width:800px;
+}
+
+#cm-logo {
+    width:400px;
+}
+
+#buffer{
+    min-height:100px;
+}
+
+#enter-button{
+    border: 1px solid #CCCCCC;
+    background-color: #ffffff;
+    color:#000000;
+}
+
+#enter-button:hover{
+
+    background-color:#e3e3e3;
+    border:1.5px solid #CCCCCC;
+
+}
+
+.navbar {
+    padding-top:20px;
+    padding-bottom:20px;
+}
+
+#nav-logo {
+    width:250px;
+}
+
+.member-logo{
+    width:100%;
+    min-width:150px;
+    max-width:300px;
+}
+
+.member-logo-wrapper{
+    height:100%;
+}
+
+.member-name-wrapper{
+
+    height:100%;
+    padding-top:4%;
+    text-align:center;
+}
+
+.member-panel{
+    min-width:400px;
+}
+
+.member-panel > div > div.panel-body {
+    background-color: #ffffff;
+}
+
+.member-panel > div > div.panel-body:hover{
+    background-color: #e3e3e3;
+    border: 2px solid #e5e5e5;
+}
+

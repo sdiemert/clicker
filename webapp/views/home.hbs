@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+{{>head}}
+
+<body data-target=".navbar-fixed-top" data-spy="scroll">
+
+{{>navbar}}
+
+<div id='main' class="container">
+
+    <div id="" style="height:100px;"></div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p>View data on a particular member's social action!</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+
+        {{#each members}}
+
+            <a href="/members/{{memberId}}">
+
+                <div class="col-sm-6 member-panel">
+
+                    <div class="panel panel-default">
+
+                        <div class="panel-body">
+
+                            <div class="row">
+
+                                <div class="col-xs-6 member-logo-wrapper">
+                                    <img class="member-logo" src="/images/member-logos/{{memberId}}.png"/>
+                                </div>
+                                <div class="col-xs-6 member-name-wrapper text-center">
+                                    <h4>{{memberName}}</h4>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </a>
+
+        {{/each}}
+
+    </div>
+
+</div>
+
+</body>
+</html>
