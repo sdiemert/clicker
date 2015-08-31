@@ -1,18 +1,21 @@
 var express = require('express');
 var router  = express.Router();
 
+var util = require('util');
+
 var memberManager = require("../lib/MemberManager")();
+var eventManager  = require("../lib/EventManager")();
 
 /**
  * Returns a list of members and their associated meta-data.
  */
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
 
-    memberManager.getMembers(null, function(err, m){
+    memberManager.getMembers(null, function (err, m) {
 
-        if(err){
+        if (err) {
             return res.status(500);
-        }else{
+        } else {
             res.status(200);
             return res.json(m);
 
@@ -23,21 +26,47 @@ router.get('/', function (req, res, next) {
 
 
 /**
- * Renders a page with member information or returns a JSON string of the information.
+ * Renders a page with member information or returns a JSON string if the format is set to 'json'.
  */
-router.get('/:name/:format?', function (req, res, next) {
+router.get('/:name/:format?', function (req, res) {
 
-    if(req.params.format && req.params.format === 'json'){
+    memberManager.getMembers(".*" + req.params.name.toLowerCase() + ".*", function (err, result) {
 
-        memberManager.getMembers();
+        if (err) {
 
-        return res.json(members);
+            console.log(err);
+            res.status(500);
+            return res.send(err);
 
-    }else{
+        } else if (result.length !== 1) {
 
-        return res.render('member', {});
+            console.log("invalid of numbers found that match: " + req.params.name.toLowerCase());
+            res.status(500);
+            return res.send();
 
-    }
+
+        } else {
+
+            eventManager.getEvents(req.params.name, null, null, function (err, events) {
+
+                if (req.params.format && req.params.format === 'json') {
+
+                    return res.json({member: result[0], events: events});
+
+                } else {
+
+                    console.log(util.inspect(events));
+                    return res.render('member', {member: result[0], events: events});
+
+                }
+
+            });
+
+
+        }
+
+    });
+
 });
 
 module.exports = router;

@@ -7,7 +7,6 @@ var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose');
 
 var routes  = require('./routes/index');
-var users   = require('./routes/users');
 var members = require('./routes/members');
 
 process.env.MONGO = process.env.MONGO || "localhost:27017";
@@ -49,7 +48,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/users', users);
 app.use('/members', members);
 
 // catch 404 and forward to error handler

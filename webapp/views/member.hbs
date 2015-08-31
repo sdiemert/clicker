@@ -8,6 +8,17 @@
 
 <div id='main' class="container">
 
+    <div id="buffer" style="height:50px;"></div>
+
+    <h1>{{member.name}} - {{member.city}}, {{member.province}}</h1>
+
+    <p>{{events}}</p>
+
+    {{#each events}}
+
+        <p>{{member}}, {{initiative}}, {{tag}}, {{time}}</p>
+
+    {{/each}}
 </div>
 
 </body>

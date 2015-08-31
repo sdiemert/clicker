@@ -4,7 +4,8 @@ var eventSchema = mongoose.Schema({
     _id : String,
     tag : String,
     member : String,
-    time : Number
+    time : Number,
+    initiative: String
 }, {
     collection : "events"
 });

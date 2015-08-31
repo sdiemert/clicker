@@ -2,39 +2,52 @@
  * Created by sdiemert on 15-08-30
  */
 
+var Event = require("./models/Event").Event;
+
 function EventManager(proc) {
 
     proc = proc || {};
 
     var that = {};
 
-    that.publicAttr = "123"; //a public attribute
+    /**
+     *
+     * Gets events that match the regular expressions provided.
+     *
+     * @param memberPattern {String} a regular expression to use to filter member _id, defaults to .*
+     * @param initPattern {String} a regular expression to use to filter initiative _id, defaults to .*
+     * @param tagPattern {String} a regular expression to use to filter tag _id, defaults to .*
+     * @param next {Function} - has signature function(err {String}, result {Array}).
+     */
+    var getEvents = function (memberPattern, initPattern, tagPattern, next) {
 
-    proc.protectedAttr = "abc"; //a protected attribute
+        if (!next || typeof next !== "function" || next.length !== 2) {
+            throw new Error("EventManager.getEvents(String, Function) expects second argument to be a function with arity 2.");
+        }
 
-    var publicMethod = function () {
+        memberPattern = memberPattern || ".*";
+        initPattern   = initPattern || ".*";
+        tagPattern    = tagPattern || ".*";
 
-        //implement public method here...
 
-    }
+        Event.find({
+            member    : {$regex: memberPattern, $options: "g"},
+            initiative: {$regex: initPattern, $options: "g"},
+            tag       : {$regex: tagPattern, $options: "g"}
+        }).exec(function (err, result) {
 
-    var protectedMethod = function () {
+            if(err){
+                console.log(err);
+                return next(err, null);
+            }else{
+                return next(null, result);
+            }
 
-        //implement protected method here...
+        });
 
-    }
+    };
 
-    var privateMethod = function () {
-
-        //implement a private method here...
-
-    }
-
-    //link protected methods here...
-    proc.protectedMethod = protectedMethod;
-
-    //link public methods here...
-    that.publicMethod = publicMethod;
+    that.getEvents = getEvents;
 
     //return the object with its public methods and attributes
     return that;
