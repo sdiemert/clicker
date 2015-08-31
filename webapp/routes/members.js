@@ -1,29 +1,43 @@
 var express = require('express');
 var router  = express.Router();
 
-var Member = require("../lib/models/Member").Member;
-
-var members = [
-    {memberId: "scienceventure", memberName: "Science Venture"},
-    {memberId: "scienceventure", memberName: "Science Venture"}
-];
+var memberManager = require("../lib/MemberManager")();
 
 /**
  * Returns a list of members and their associated meta-data.
  */
 router.get('/', function (req, res, next) {
 
-    res.status(200);
-    return res.json(members);
+    memberManager.getMembers(null, function(err, m){
+
+        if(err){
+            return res.status(500);
+        }else{
+            res.status(200);
+            return res.json(m);
+
+        }
+    });
 
 });
 
 
 /**
- * Renders a list
+ * Renders a page with member information or returns a JSON string of the information.
  */
-router.get('/:name', function (req, res, next) {
-    res.render('member', {});
+router.get('/:name/:format?', function (req, res, next) {
+
+    if(req.params.format && req.params.format === 'json'){
+
+        memberManager.getMembers();
+
+        return res.json(members);
+
+    }else{
+
+        return res.render('member', {});
+
+    }
 });
 
 module.exports = router;
