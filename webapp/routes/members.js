@@ -49,16 +49,35 @@ router.get('/:name/:format?', function (req, res) {
 
             eventManager.getEvents(req.params.name, null, null, function (err, events) {
 
-                if (req.params.format && req.params.format === 'json') {
+                if (err) {
 
-                    return res.json({member: result[0], events: events});
+                    console.log(err);
+                    res.status(500);
+                    res.send();
 
                 } else {
 
-                    console.log(util.inspect(events));
-                    return res.render('member', {member: result[0], events: events});
+                    var agg = eventManager.aggregate(events);
+
+                    eventManager.refine(agg, function(err, refined){
+
+                        if (req.params.format && req.params.format === 'json') {
+
+                            return res.json({member: result[0], events: events});
+
+                        } else {
+
+                            return res.render('member', {member: result[0], refined: refined, timeAggregate: eventManager.aggregateByDate(events)});
+
+                        }
+
+                    });
+
+
+
 
                 }
+
 
             });
 

@@ -1,0 +1,26 @@
+<script src="/javascripts/d3.v3.js"></script>
+<script src="/javascripts/dataHandler.js"></script>
+<script src="/javascripts/vizUtils.js"></script>
+<script src="/javascripts/pieViz.js"></script>
+
+<script>
+
+    var data = {{{json refined}}};
+
+    console.log(data);
+
+    var initAgg = aggregateByInitiative(data);
+
+    pieViz(initAgg, "#all-chart");
+
+    //generate pies for each of the tags within each initiative
+
+    for(var k in data){
+
+        pieViz(aggregateByTag(data[k]), "#"+getIdFromName(k)+"-chart");
+
+    }
+
+</script>
+
+

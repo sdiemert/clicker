@@ -1,11 +1,12 @@
 var mongoose = require("mongoose");
 
-var eventSchema = mongoose.Schema({
+var eventSchema = new mongoose.Schema({
     _id : String,
     tag : String,
     member : String,
     time : Number,
-    initiative: String
+    initiative: String,
+    user : {type : mongoose.Schema.Types.ObjectId, default: null}
 }, {
     collection : "events"
 });

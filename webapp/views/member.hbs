@@ -8,18 +8,62 @@
 
 <div id='main' class="container">
 
+
+
     <div id="buffer" style="height:50px;"></div>
 
     <h1>{{member.name}} - {{member.city}}, {{member.province}}</h1>
 
-    <p>{{events}}</p>
+    <div id="buffer-sm"></div>
 
-    {{#each events}}
+    <div class="row">
 
-        <p>{{member}}, {{initiative}}, {{tag}}, {{time}}</p>
+        <div class="col-xs-12">
 
-    {{/each}}
+            <ul class="nav nav-tabs nav-justified nav-tabs-justified">
+
+                <li id="all" role="presentation" class="active"><a href="#all-chart" data-toggle="tab">All</a></li>
+
+                {{#each refined}}
+
+                    <li id="{{makeId @key}}" role="presentation"><a href="#{{makeId @key}}-chart" data-toggle="tab" >{{@key}}</a></li>
+
+                {{/each}}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-xs-12 tab-content" id="tabs">
+
+            <div class='tab-pane active' id="all-chart"></div>
+
+            {{#each refined}}
+                <div class='tab-pane' id="{{makeId @key}}-chart"></div>
+            {{/each}}
+
+        </div>
+
+    </div>
+
 </div>
+
+<div id="tooltip-holder" style=""> </div>
+
+{{>viz}}
+
+<script>
+    /*
+    $(document).ready(function(){
+        $('.nav-tabs li:eq(0) a').tab('show');
+    });
+    */
+</script>
+
 
 </body>
 </html>

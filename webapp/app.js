@@ -38,6 +38,20 @@ conn.once('open', function(){
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 require('hbs').registerPartials(path.join(__dirname, 'views/partials'));
+require('hbs').registerHelper('json', function(data) {
+    return JSON.stringify(data);
+});
+
+/**
+ * Helper for casting names to HTML id's for easy manipulation in browser.
+ */
+require('hbs').registerHelper('makeId', function(data) {
+    data = data.replace(" ", "-");
+    data = data.toLowerCase();
+
+    return data;
+
+});
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

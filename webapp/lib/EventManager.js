@@ -2,7 +2,11 @@
  * Created by sdiemert on 15-08-30
  */
 
-var Event = require("./models/Event").Event;
+var Event      = require("./models/Event").Event;
+var Initiative = require("./models/Initiative").Initiative;
+var Tag        = require("./models/Tag").Tag;
+
+var util = require('util');
 
 function EventManager(proc) {
 
@@ -36,10 +40,41 @@ function EventManager(proc) {
             tag       : {$regex: tagPattern, $options: "g"}
         }).exec(function (err, result) {
 
-            if(err){
+            if (err) {
                 console.log(err);
                 return next(err, null);
-            }else{
+            } else {
+
+                return next(null, result);
+
+            }
+
+        });
+
+    };
+
+    /**
+     * @param pattern {String}  regular expression to match on initiative names, defautls to .*
+     * @param next {Function} - has signature function(err {String}, result {Array})
+     */
+    var getInitiatives = function (pattern, next) {
+
+        if (!next || typeof next !== "function" || next.length !== 2) {
+            throw new Error("EventManager.getEvents(String, Function) expects second argument to be a function with arity 2.");
+        }
+
+        pattern = pattern || ".*";
+
+        Initiative.find({
+
+            _id : {$regex: pattern, $options: "g"}
+
+        }).exec(function (err, result) {
+
+            if (err) {
+                console.log(err);
+                return next(err, null);
+            } else {
                 return next(null, result);
             }
 
@@ -47,7 +82,213 @@ function EventManager(proc) {
 
     };
 
-    that.getEvents = getEvents;
+    /**
+     * @param pattern {String}  regular expression to match on tag names, defautls to .*
+     * @param next {Function} - has signature function(err {String}, result {Array})
+     */
+    var getTags = function (pattern, next) {
+
+        if (!next || typeof next !== "function" || next.length !== 2) {
+            throw new Error("EventManager.getEvents(String, Function) expects second argument to be a function with arity 2.");
+        }
+
+        pattern = pattern || ".*";
+
+        Tag.find({
+
+            _id : {$regex: pattern, $options: "g"}
+
+        }).exec(function (err, result) {
+
+            if (err) {
+                console.log(err);
+                return next(err, null);
+            } else {
+                return next(null, result);
+            }
+
+        });
+
+    };
+
+    var replaceNames = function (data, inits, tags) {
+
+        for (var i = 0; i < inits.length; i++) {
+
+            for (var t = 0; t < tags.length; t++) {
+
+                data[inits[i]._id][tags[t].name] = data[inits[i]._id][tags[t]._id];
+                delete data[inits[i]._id][tags[t]._id];
+
+            }
+
+            data[inits[i].name] = data[inits[i]._id];
+            delete data[inits[i]._id];
+
+        }
+
+        console.log(util.inspect(data));
+
+        return data;
+
+    };
+
+    var refine = function (data, outerCallback) {
+
+        that.getInitiatives(null, function (ierr, inits) {
+
+            that.getTags(null, function (terr, tags) {
+
+                if (ierr) {
+
+                    return outerCallback(ierr, null);
+
+                } else if (terr) {
+
+                    return outerCallback(terr, null);
+
+                } else {
+
+                    return outerCallback(null, replaceNames(data, inits, tags));
+
+                }
+
+
+            });
+
+        });
+
+    };
+
+    /**
+     * Aggregates the data for the events, sorted by the following (in order):
+     *  - initiative
+     *  - tag
+     *  - timestamp
+     *
+     * @param data {Array}
+     *
+     * @return {Object} the aggregated data, has structure like:
+     *  { initiative_name : { tag_name : { timestamp : Number }, ... }, ... } where timestamp is number of ms since epoch.
+     */
+    var aggregate = function (events) {
+
+        var obj = {};
+
+        var e        = null;
+        var tmp_date = null;
+
+        for (var i = 0; i < events.length; i++) {
+
+            e = events[i];
+
+            if (!obj[e.initiative]) {
+
+                obj[e.initiative] = {};
+
+            }
+
+            if (!obj[e.initiative][e.tag]) {
+
+                obj[e.initiative][e.tag] = {};
+
+            }
+
+            tmp_date = new Date(e.time * 1000);
+
+            //set the time portion of the date to be 00:00:00.000
+            // this causes all events from same day to have the same timestamp.
+            tmp_date.setHours(0, 0, 0, 0);
+
+
+            if (!obj[e.initiative][e.tag][tmp_date.getTime()]) {
+
+                obj[e.initiative][e.tag][tmp_date.getTime()] = 0;
+
+            }
+
+            obj[e.initiative][e.tag][tmp_date.getTime()]++;
+
+        }
+
+        return obj;
+
+    };
+
+    /**
+     * Aggregates event data by timestamp, rounds to nearest day.
+     *
+     * @param events {Array}
+     * @returns {Object} has structure like:
+     *  { timestamp : Number, ... } where timestamp is number of milliseconds since epoch.
+     */
+    var aggregateByDate = function (events) {
+
+        var obj = {};
+
+        var e        = null;
+        var tmp_date = null;
+
+        for (var i = 0; i < events.length; i++) {
+
+            e = events[i];
+
+            tmp_date = new Date(e.time * 1000);
+
+            tmp_date.setHours(0, 0, 0, 0);
+
+            if (!obj[tmp_date.getTime]) {
+
+                obj[tmp_date.getTime()] = 0;
+
+            }
+
+            obj[tmp_date.getTime()]++;
+
+        }
+
+        return obj;
+    };
+
+    /**
+     * Aggregates event data by initaitive
+     *
+     * @param events {Array}
+     * @returns {Object} has structure like:
+     *  { initiative_name : Number, ... }
+     */
+    var aggregateByInitiative = function (events) {
+
+        var obj = {};
+
+        var e = null;
+
+        for (var i = 0; i < events.length; i++) {
+
+            e = events[i];
+
+            if (!obj[e.initiative]) {
+
+                obj[e.initiative] = 0;
+
+            }
+
+            obj[e.initiative]++;
+
+        }
+
+        return obj;
+
+    };
+
+
+    that.getEvents             = getEvents;
+    that.getInitiatives        = getInitiatives;
+    that.getTags               = getTags;
+    that.refine                = refine;
+    that.aggregate             = aggregate;
+    that.aggregateByDate       = aggregateByDate;
+    that.aggregateByInitiative = aggregateByInitiative;
 
     //return the object with its public methods and attributes
     return that;
