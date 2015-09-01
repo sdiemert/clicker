@@ -111,6 +111,29 @@ function EventManager(proc) {
 
     };
 
+    /**
+     * @param member {String}
+     * @param tag {String}
+     * @param timestamp {String}
+     * @param next {Function}
+     */
+    var addEvent = function (member, initiative, tag, timestamp, user, next) {
+
+        if (!next || typeof next !== 'function' || next.length !== 1 || !member || typeof member !== 'string' || !tag || typeof tag !== 'string' || !timestamp) {
+            throw new Error("EventManager.addEvent(String, String, String, String, String, Function) expects 5 parameters, the last is a function or arity 1.")
+        }
+
+        timestamp = Number(timestamp);
+
+        var e = new Event({initiative: initiative, member: member, tag: tag, user: user, time: timestamp});
+
+        e.save(function (err, x) {
+            return next(err);
+        })
+
+
+    };
+
     var replaceNames = function (data, inits, tags) {
 
         for (var i = 0; i < inits.length; i++) {
@@ -288,6 +311,7 @@ function EventManager(proc) {
 
 
     that.getEvents             = getEvents;
+    that.addEvent              = addEvent;
     that.getInitiatives        = getInitiatives;
     that.getTags               = getTags;
     that.refine                = refine;

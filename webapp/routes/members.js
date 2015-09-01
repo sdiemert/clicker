@@ -59,7 +59,7 @@ router.get('/:name/:format?', function (req, res) {
 
                     var agg = eventManager.aggregate(events);
 
-                    eventManager.refine(agg, function(err, refined){
+                    eventManager.refine(agg, function (err, refined) {
 
                         if (req.params.format && req.params.format === 'json') {
 
@@ -69,13 +69,15 @@ router.get('/:name/:format?', function (req, res) {
 
                             console.log(util.inspect(refined));
 
-                            return res.render('member', {member: result[0], refined: refined, timeAggregate: eventManager.aggregateByDate(events)});
+                            return res.render('member', {
+                                member       : result[0],
+                                refined      : refined,
+                                timeAggregate: eventManager.aggregateByDate(events)
+                            });
 
                         }
 
                     });
-
-
 
 
                 }
@@ -87,6 +89,29 @@ router.get('/:name/:format?', function (req, res) {
         }
 
     });
+
+});
+
+router.post("/:member/:initiative/:tag/:timestamp", function (req, res) {
+
+    eventManager.addEvent(req.params.member, req.params.initiative, req.params.tag, req.params.timestamp, null,
+    function (err) {
+
+        if (err) {
+            console.log(err);
+            res.status(500);
+            return res.send(err);
+        } else {
+
+            res.status(200);
+            return res.send();
+
+        }
+
+    }
+
+    )
+    ;
 
 });
 
