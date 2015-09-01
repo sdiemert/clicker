@@ -104,3 +104,7 @@ div.tooltip {
     pointer-events: none;
     z-index: 100;
 }
+
+.data-table-wrapper{
+    margin-top:50px;
+}

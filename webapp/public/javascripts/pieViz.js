@@ -55,7 +55,6 @@ function compute(data) {
 function pieViz(data, parent) {
 
     var allData = compute(data);
-    console.log(parent);
 
     var div = d3.select("#tooltip-holder").append("div")
         .attr("class", "tooltip")
@@ -64,7 +63,7 @@ function pieViz(data, parent) {
     var radius     = 150,
         margin     = 50,
         height     = 450;
-    var width      = 800; //$(parent).width();
+    var width      = 450; //$(parent).width();
 
 
     var colors = ["#6FBF51", "#F90", "#FF4791", "#40CAFC"];
@@ -75,7 +74,7 @@ function pieViz(data, parent) {
         .attr("width", width)
         .attr("height", (radius * 2 + 2 * margin) > height ? (radius * 2 + 2 * margin) : height)
         .append("svg:g")
-        .attr("transform", "translate(" + (width/2) + "," + (2 * radius) + ")");
+        .attr("transform", "translate(" + (width/1.5) + "," + (1.5 * radius) + ")");
 
     var arc = d3.svg.arc()
         .outerRadius(radius)

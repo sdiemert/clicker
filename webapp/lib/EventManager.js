@@ -67,7 +67,7 @@ function EventManager(proc) {
 
         Initiative.find({
 
-            _id : {$regex: pattern, $options: "g"}
+            _id: {$regex: pattern, $options: "g"}
 
         }).exec(function (err, result) {
 
@@ -96,7 +96,7 @@ function EventManager(proc) {
 
         Tag.find({
 
-            _id : {$regex: pattern, $options: "g"}
+            _id: {$regex: pattern, $options: "g"}
 
         }).exec(function (err, result) {
 
@@ -117,17 +117,22 @@ function EventManager(proc) {
 
             for (var t = 0; t < tags.length; t++) {
 
-                data[inits[i]._id][tags[t].name] = data[inits[i]._id][tags[t]._id];
-                delete data[inits[i]._id][tags[t]._id];
+                if (data[inits[i]._id][tags[t]._id]) {
+
+                    data[inits[i]._id][tags[t].name] = data[inits[i]._id][tags[t]._id];
+                    delete data[inits[i]._id][tags[t]._id];
+
+                }
 
             }
 
-            data[inits[i].name] = data[inits[i]._id];
-            delete data[inits[i]._id];
+            if (data[inits[i]._id]) {
+                data[inits[i].name] = data[inits[i]._id];
+                delete data[inits[i]._id];
+            }
+
 
         }
-
-        console.log(util.inspect(data));
 
         return data;
 

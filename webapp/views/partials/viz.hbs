@@ -11,13 +11,28 @@
 
     var initAgg = aggregateByInitiative(data);
 
+    for(var i in initAgg){
+
+        $("#"+getIdFromName(i)+"-data").text(initAgg[i]);
+
+    }
+
     pieViz(initAgg, "#all-chart");
 
     //generate pies for each of the tags within each initiative
 
+    var a = null;
     for(var k in data){
 
         pieViz(aggregateByTag(data[k]), "#"+getIdFromName(k)+"-chart");
+
+        a = aggregateByTag(data[k]);
+
+        for(var j in a){
+
+            $("#"+getIdFromName(k)+"-"+getIdFromName(j)+"-data").text(a[j]);
+
+        }
 
     }
 

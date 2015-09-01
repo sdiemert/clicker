@@ -67,6 +67,8 @@ router.get('/:name/:format?', function (req, res) {
 
                         } else {
 
+                            console.log(util.inspect(refined));
+
                             return res.render('member', {member: result[0], refined: refined, timeAggregate: eventManager.aggregateByDate(events)});
 
                         }

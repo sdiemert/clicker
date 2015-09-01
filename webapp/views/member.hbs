@@ -9,7 +9,6 @@
 <div id='main' class="container">
 
 
-
     <div id="buffer" style="height:50px;"></div>
 
     <h1>{{member.name}} - {{member.city}}, {{member.province}}</h1>
@@ -22,11 +21,12 @@
 
             <ul class="nav nav-tabs nav-justified nav-tabs-justified">
 
-                <li id="all" role="presentation" class="active"><a href="#all-chart" data-toggle="tab">All</a></li>
+                <li id="all" role="presentation" class="active"><a href="#all-view" data-toggle="tab">All</a></li>
 
                 {{#each refined}}
 
-                    <li id="{{makeId @key}}" role="presentation"><a href="#{{makeId @key}}-chart" data-toggle="tab" >{{@key}}</a></li>
+                    <li id="{{makeId @key}}" role="presentation"><a href="#{{makeId @key}}-view"
+                                                                    data-toggle="tab">{{@key}}</a></li>
 
                 {{/each}}
 
@@ -40,10 +40,83 @@
 
         <div class="col-xs-12 tab-content" id="tabs">
 
-            <div class='tab-pane active' id="all-chart"></div>
+            <div class='tab-pane active' id="all-view">
+
+                <div class="row">
+
+                    <div class="col-xs-6 data-table-wrapper">
+
+                        <table class="table table-striped table-hover">
+
+                            <h3>All Initiatives</h3>
+
+                            <tr>
+
+                                <th>Category</th>
+                                <th>Events</th>
+
+                            </tr>
+                            <tbody>
+
+                            {{#each refined}}
+                                <tr>
+                                    <td>{{@key}}</td>
+                                    <td id="{{makeId @key}}-data"></td>
+                                </tr>
+                            {{/each}}
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    <div class="col-xs-6">
+
+                        <div class="" id="all-chart"></div>
+
+                    </div>
+                </div>
+
+            </div>
 
             {{#each refined}}
-                <div class='tab-pane' id="{{makeId @key}}-chart"></div>
+
+                <div class='tab-pane' id="{{makeId @key}}-view">
+
+                    <div class="row">
+                        <div class="col-xs-6 data-table-wrapper">
+
+                            <h3>{{@key}}</h3>
+
+                            <table class="table table-striped table-hover">
+                                <tr>
+
+                                    <th>Category</th>
+                                    <th>Events</th>
+
+                                </tr>
+                                <tbody>
+
+                                {{#each this}}
+                                    <tr>
+                                        <td>{{@key}}</td>
+                                        <td id="{{makeId @../key}}-{{makeId @key}}-data"></td>
+                                    </tr>
+                                {{/each}}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                        <div class="col-xs-6">
+
+                            <div class="" id="{{makeId @key}}-chart"></div>
+
+                        </div>
+                    </div>
+
+                </div>
+
             {{/each}}
 
         </div>
@@ -52,18 +125,9 @@
 
 </div>
 
-<div id="tooltip-holder" style=""> </div>
+<div id="tooltip-holder" style=""></div>
 
 {{>viz}}
-
-<script>
-    /*
-    $(document).ready(function(){
-        $('.nav-tabs li:eq(0) a').tab('show');
-    });
-    */
-</script>
-
 
 </body>
 </html>
