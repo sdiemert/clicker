@@ -1,5 +1,7 @@
 __author__ = 'sdiemert'
 
+import httplib
+
 class HttpInterface:
 
     def __init__(self, host=None, port=None):
@@ -9,3 +11,4 @@ class HttpInterface:
 
     def send_data(self, user="", passwd="", data=[]):
         pass
+

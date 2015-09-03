@@ -1,6 +1,7 @@
 __author__ = 'sdiemert'
 
 from SerialInterface import SerialInterface
+from HttpInterface import HttpInterface
 
 class Controller:
 
@@ -13,6 +14,8 @@ class Controller:
         self.view = view
         self.serial = SerialInterface(view=self.view)
         self.data = []
+        self.initiatives = []
+        self.http = HttpInterface()
 
     def set_view(self, view):
         self.view = view
@@ -23,6 +26,12 @@ class Controller:
             return []
         else:
             return self.serial.get_available_serial_ports()
+
+    def get_initiatives(self):
+        return [i.get_name() for i in self.initiatives]
+
+    def set_initiatives(self, inits):
+        self.initiatives = inits
 
     def _view_message(self, s, level=1):
         if not self.view:
@@ -47,7 +56,19 @@ class Controller:
 
     def reset(self):
         self.data = []
+        self.initiatives = []
         self.serial.reset()
+
+    def init(self):
+        """
+        Initializes the application logic:
+        1) Checks that remote host for web server is available
+        2) Fetches and stores current initiatives and tags from remote web server
+        3) Other?
+        :return: True if all checks and setup pass, False otherwise.
+        """
+
+
 
     def show_data(self):
 

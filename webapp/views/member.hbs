@@ -59,10 +59,12 @@
                             <tbody>
 
                             {{#each refined}}
-                                <tr>
-                                    <td>{{@key}}</td>
-                                    <td id="{{makeId @key}}-data"></td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            {{@key}}
+                                        </td>
+                                        <td id="{{makeId @key}}-data"></td>
+                                    </tr>
                             {{/each}}
 
                             </tbody>
