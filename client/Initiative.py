@@ -23,9 +23,11 @@ class Tag(Entity):
         Entity.__init__(self, tid, name)
         self.value = value
 
+    def __repr__(self):
+        return "Tag { id: "+ str(self.id)+", name: "+str(self.name)+", value: "+str(self.value)+" }"
 
 class Initiative(Entity):
-    def __init__(self, iid="", name="", tags=[]):
+    def __init__(self, iid="", name="", tags=list()):
         """
         :param id:  String
         :param name: String
@@ -37,6 +39,9 @@ class Initiative(Entity):
 
     def get_tags(self):
         return self.tags
+
+    def add_tag(self, s):
+        self.tags.append(s)
 
     def __repr__(self):
         return "Initiative { id: " + str(self.id) + ", name: " + self.name + ", tags: " + str(self.tags) + " }"

@@ -16,6 +16,7 @@ class Controller:
         self.serial = SerialInterface(view=self.view)
         self.data = []
         self.initiatives = []
+        self.members = []
         self.http = HttpInterface()
         self.conf = None
 
@@ -72,9 +73,10 @@ class Controller:
 
         # Load the remote host info from the config file
 
-        self.conf = cp.ConfigParser('config.ini')
-        self.http.set_host(self.conf.get('remote-host', 'hostname'))
-        self.http.set_port(self.conf.get('remote-host', 'port'))
+        self.conf = cp.ConfigParser()
+        self.conf.read('config.ini')
+        self.http.set_host(str(self.conf.get('remotehost', 'hostname')))
+        self.http.set_port(str(self.conf.get('remotehost', 'port')))
 
         print "http interface is configured to: " + str(self.http)
 
@@ -85,8 +87,8 @@ class Controller:
 
         # Fetch initiatives and tags from remote host
 
-        self.http.fetch_initiatves()
-
+        self.initiatives = self.http.fetch_initiatives()
+        self.members = self.http.fetch_members()
 
     def show_data(self):
 
