@@ -33,6 +33,9 @@ class Controller:
     def get_initiatives(self):
         return [i.get_name() for i in self.initiatives]
 
+    def get_members(self):
+        return [i.get_name() for i in self.members]
+
     def set_initiatives(self, inits):
         self.initiatives = inits
 

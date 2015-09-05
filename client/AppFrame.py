@@ -30,6 +30,10 @@ class AppFrame(wx.Frame):
         self.input1 = wx.ComboBox(self.display, wx.ID_ANY, value="Select Source", choices=['a', 'b', 'c'],
                                   size=(400, -1))
         self.initiatives = wx.ComboBox(self.display, wx.ID_ANY, value="Select Initiative", choices=['a','b','c'], size=(300, -1))
+        self.init_label = wx.StaticText(self.display, wx.ID_ANY, "Initiative:")
+        self.members = wx.ComboBox(self.display, wx.ID_ANY, value="Select Member", choices=['a','b','c'], size=(300, -1))
+        self.member_label = wx.StaticText(self.display, wx.ID_ANY, "Actua Member:")
+
         self.output = wx.TextCtrl(self.display, wx.ID_ANY, size=(450, 600), style=wx.TE_MULTILINE)
         self.remove_button = wx.Button(self.display, wx.ID_ANY, "Remove Items")
 
@@ -37,12 +41,14 @@ class AppFrame(wx.Frame):
         self.output.SetEditable(False)
         self.http_upload_button.Disable()
         self.remove_button.Disable()
+
         self.initiatives.Disable()
+        self.members.Disable()
 
         self.list = AutoWidthListCtrl(self.display, size=(300, 400))
         self.list.InsertColumn(0, 'Item No.', width=60)
-        self.list.InsertColumn(1, 'foo', width=120)
-        self.list.InsertColumn(2, 'bar', width=120)
+        self.list.InsertColumn(1, 'Button No.', width=80)
+        self.list.InsertColumn(2, 'Action Name', width=100)
 
         wrapper = wx.BoxSizer(wx.VERTICAL)
         top = wx.BoxSizer(wx.HORIZONTAL)
@@ -70,7 +76,10 @@ class AppFrame(wx.Frame):
 
         data_control.Add(data_buttons)
 
+        data.Add(self.init_label, 0, wx.ALL, 5)
         data.Add(self.initiatives, 0, wx.ALL, 5)
+        data.Add(self.member_label, 0, wx.ALL, 5)
+        data.Add(self.members, 0, wx.ALL, 5)
         data.Add(data_control)
 
         feedback.Add(self.output, 0, wx.ALL, 5)
@@ -124,12 +133,12 @@ class AppFrame(wx.Frame):
         if len(val) != 2:
             raise TypeError("AppFrame.add_list_item(val) expects val to be a tuple of length 2")
 
-        index = self.list.InsertStringItem(self.listCount, self.listCount)
+        index = self.list.InsertStringItem(self.listCount, str(self.listCount))
 
         if index >= 0:
 
-            self.list.SetStringItem(index, 1, val[1])
-            self.list.SetStringItem(index, 2, val[2])
+            self.list.SetStringItem(index, 1, val[0])
+            self.list.SetStringItem(index, 2, val[1])
             self.listCount += 1
             return True
 
@@ -142,6 +151,7 @@ class AppFrame(wx.Frame):
         self.http_upload_button.Disable()
         self.arduino_upload_button.Enable()
         self.controller.reset()
+        self.list.ClearAll()
 
     def _on_upload_action(self, event):
         """
@@ -159,10 +169,13 @@ class AppFrame(wx.Frame):
             if self.controller.upload(self.input1.GetValue()):
                 self.http_upload_button.Enable()
                 self.arduino_upload_button.Disable()
+                self.initiatives.Enable()
+                self.members.Enable()
                 self.display_message("-------------------------")
                 self.controller.show_data()
                 self.display_message("-------------------------")
                 self.display_message("Select 'Upload to Web' to send this data to the web app...")
+
         self.add_list_item(('bin', 'bar'))
 
     def display_message(self, message, level=1):
@@ -192,9 +205,13 @@ class AppFrame(wx.Frame):
             self.input1.SetValue(d[0])
 
             i = self.controller.get_initiatives()
-            i = ("Foo", "bar")
             self.initiatives.Clear()
             self.initiatives.AppendItems(i)
             self.initiatives.SetValue(i[0])
+
+            m = self.controller.get_members()
+            self.members.Clear()
+            self.members.AppendItems(m)
+            self.members.SetValue(m[0])
 
         return None
