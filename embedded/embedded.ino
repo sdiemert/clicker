@@ -6,9 +6,11 @@
 #include "types.h"
 #include "client_interface.h"
 
-uint8_t BUTTON1 = 4;
-uint8_t BUTTON2 = 3;
-uint8_t BUTTON3 = 2;
+uint8_t BUTTON1 = 9;
+uint8_t BUTTON2 = 10;
+uint8_t BUTTON3 = 12;
+
+int LED = 7;
 
 uint8_t prev_button_1_state = HIGH;
 uint8_t prev_button_2_state = HIGH;
@@ -29,9 +31,15 @@ void setup() {
     pinMode(BUTTON2, INPUT_PULLUP);
     pinMode(BUTTON3, INPUT_PULLUP);
 
+    //Set up output
+    pinMode(LED, OUTPUT);
+    digitalWrite(LED, LOW);
+
     setTime(12, 30, 30, 15, 10, 2015);
 
-    client = new ClientInterface(&Serial);
+    //Serial.begin(9600);
+
+    client = new ClientInterface((HardwareSerial *)&Serial);
 
 }
 

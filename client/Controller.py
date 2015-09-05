@@ -2,6 +2,7 @@ __author__ = 'sdiemert'
 
 from SerialInterface import SerialInterface
 from HttpInterface import HttpInterface
+import ConfigParser as cp
 
 class Controller:
 
@@ -16,6 +17,7 @@ class Controller:
         self.data = []
         self.initiatives = []
         self.http = HttpInterface()
+        self.conf = None
 
     def set_view(self, view):
         self.view = view
@@ -68,6 +70,22 @@ class Controller:
         :return: True if all checks and setup pass, False otherwise.
         """
 
+        # Load the remote host info from the config file
+
+        self.conf = cp.ConfigParser('config.ini')
+        self.http.set_host(self.conf.get('remote-host', 'hostname'))
+        self.http.set_port(self.conf.get('remote-host', 'port'))
+
+        print "http interface is configured to: " + str(self.http)
+
+        # Check that the remote host can be connected to.
+
+        if not self.http.check_remote():
+            raise Exception("Could not contact server at: "+str(self.http.host) + " on port: "+str(self.http.port))
+
+        # Fetch initiatives and tags from remote host
+
+        self.http.fetch_initiatves()
 
 
     def show_data(self):

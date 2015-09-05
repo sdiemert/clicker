@@ -172,7 +172,8 @@ uint8_t ClientInterface::check_available() {
         c = this->hw->read();
 
         if (c == '$') {
-
+          
+            digitalWrite(7, HIGH);
             return 1;
 
         } else {

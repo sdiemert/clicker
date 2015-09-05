@@ -3,6 +3,7 @@
 
 #include <HardwareSerial.h>
 #include <stdint.h>
+#include <Arduino.h>
 
 #include "const.h"
 #include "types.h"

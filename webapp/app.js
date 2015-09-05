@@ -6,20 +6,22 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose');
 
-var routes  = require('./routes/index');
-var members = require('./routes/members');
+var routes     = require('./routes/index');
+var members    = require('./routes/members');
+var status     = require('./routes/status');
+var initiatives = require('./routes/initiatives');
 
 process.env.MONGO = process.env.MONGO || "localhost:27017";
 
 var app = express();
 
-mongoose.connect(process.env.MONGO+"/sparc");
+mongoose.connect(process.env.MONGO + "/sparc");
 
 var conn = mongoose.connection;
 
-conn.on('error', function(x){
+conn.on('error', function (x) {
 
-    console.log("Cound not connect to MongoDB, error: "+x);
+    console.log("Cound not connect to MongoDB, error: " + x);
     console.log("Cannot run without db connection, exiting...");
 
     //we can't run the app without a db connection...
@@ -28,7 +30,7 @@ conn.on('error', function(x){
 
 });
 
-conn.once('open', function(){
+conn.once('open', function () {
 
     console.log("Connected to Mongo database!");
 
@@ -38,14 +40,14 @@ conn.once('open', function(){
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 require('hbs').registerPartials(path.join(__dirname, 'views/partials'));
-require('hbs').registerHelper('json', function(data) {
+require('hbs').registerHelper('json', function (data) {
     return JSON.stringify(data);
 });
 
 /**
  * Helper for casting names to HTML id's for easy manipulation in browser.
  */
-require('hbs').registerHelper('makeId', function(data) {
+require('hbs').registerHelper('makeId', function (data) {
     data = data.replace(" ", "-");
     data = data.toLowerCase();
 
@@ -63,6 +65,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/members', members);
+app.use('/status', status);
+app.use('/initiatives', initiatives);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

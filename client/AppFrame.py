@@ -192,6 +192,7 @@ class AppFrame(wx.Frame):
             self.input1.SetValue(d[0])
 
             i = self.controller.get_initiatives()
+            i = ("Foo", "bar")
             self.initiatives.Clear()
             self.initiatives.AppendItems(i)
             self.initiatives.SetValue(i[0])
