@@ -22,7 +22,7 @@ class AppFrame(wx.Frame):
 
         self.display = wx.Panel(self, wx.ID_ANY)
 
-        self.title = wx.StaticText(self.display, wx.ID_ANY, "Clicker Client")
+        self.title = wx.StaticText(self.display, wx.ID_ANY, "SPARC Change Connector")
         self.divider = wx.StaticLine(self.display, wx.ID_ANY)
         self.arduino_upload_button = wx.Button(self.display, wx.ID_ANY, "Load from Arduino")
         self.http_upload_button = wx.Button(self.display, wx.ID_ANY, "Upload to Web")
@@ -174,9 +174,13 @@ class AppFrame(wx.Frame):
                 self.display_message("-------------------------")
                 self.controller.show_data()
                 self.display_message("-------------------------")
-                self.display_message("Select 'Upload to Web' to send this data to the web app...")
+                self.display_message("Select 'Upload to Web' to send this data to the web.")
 
-        self.add_list_item(('bin', 'bar'))
+        data = self.controller.get_data()
+
+        if data:
+            for d in data:
+                self.add_list_item(d.get_list_rep())
 
     def display_message(self, message, level=1):
         """

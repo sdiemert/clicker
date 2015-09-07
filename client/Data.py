@@ -1,5 +1,7 @@
 __author__ = 'sdiemert'
 
+from datetime import date
+
 class Data:
 
     def __init__(self, action=None, min=None, hour=None, day=None, month=None, year=None):
@@ -27,6 +29,12 @@ class Data:
             return False
         else:
             return True
+
+    def get_list_rep(self):
+
+        d = date(self.year, self.month, self.day)
+
+        return (str(self.action), str(d.isoformat()))
 
     def __str__(self):
 

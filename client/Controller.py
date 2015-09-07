@@ -4,8 +4,8 @@ from SerialInterface import SerialInterface
 from HttpInterface import HttpInterface
 import ConfigParser as cp
 
-class Controller:
 
+class Controller:
     def __init__(self, view=None):
         """
         :param view:AppFrame
@@ -46,7 +46,7 @@ class Controller:
             self.view.display_message(s, level)
 
     def upload(self, source):
-        print "Controller.upload(source='"+source+"')"
+        print "Controller.upload(source='" + source + "')"
         self._view_message("Attempting to gather data from the arduino")
 
         result = self.serial.connect(source)
@@ -57,6 +57,7 @@ class Controller:
             self._view_message("Failed to gather data from Arduino.", 2)
         else:
             self._view_message("Successfully gathered data from Arduino")
+            self.data = result
 
         return result
 
@@ -86,7 +87,7 @@ class Controller:
         # Check that the remote host can be connected to.
 
         if not self.http.check_remote():
-            raise Exception("Could not contact server at: "+str(self.http.host) + " on port: "+str(self.http.port))
+            raise Exception("Could not contact server at: " + str(self.http.host) + " on port: " + str(self.http.port))
 
         # Fetch initiatives and tags from remote host
 
@@ -101,3 +102,6 @@ class Controller:
             self._view_message("Data is: ")
             for i in d:
                 self._view_message(str(i))
+
+    def get_data(self):
+        return self.serial.get_data()
