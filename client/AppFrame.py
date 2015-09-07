@@ -4,13 +4,14 @@ import wx
 
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
+
 class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
-    def __init__(self, parent, size=(200,400)):
+    def __init__(self, parent, size=(200, 400)):
         wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT, size=size)
         ListCtrlAutoWidthMixin.__init__(self)
 
-class AppFrame(wx.Frame):
 
+class AppFrame(wx.Frame):
     def __init__(self, parent, title, controller=None):
         wx.Frame.__init__(self, parent, title=title, size=(800, 600))
 
@@ -18,7 +19,7 @@ class AppFrame(wx.Frame):
 
         self.controller = controller
 
-        self.SetMaxSize(wx.Size(800, 600))
+        self.SetMaxSize(wx.Size(800, 800))
 
         self.display = wx.Panel(self, wx.ID_ANY)
 
@@ -29,26 +30,26 @@ class AppFrame(wx.Frame):
         self.cancel_button = wx.Button(self.display, wx.ID_ANY, "Cancel")
         self.input1 = wx.ComboBox(self.display, wx.ID_ANY, value="Select Source", choices=['a', 'b', 'c'],
                                   size=(400, -1))
-        self.initiatives = wx.ComboBox(self.display, wx.ID_ANY, value="Select Initiative", choices=['a','b','c'], size=(300, -1))
+        self.initiatives = wx.ComboBox(self.display, wx.ID_ANY, value="Select Initiative", choices=['a', 'b', 'c'],
+                                       size=(300, -1))
         self.init_label = wx.StaticText(self.display, wx.ID_ANY, "Initiative:")
-        self.members = wx.ComboBox(self.display, wx.ID_ANY, value="Select Member", choices=['a','b','c'], size=(300, -1))
+        self.members = wx.ComboBox(self.display, wx.ID_ANY, value="Select Member", choices=['a', 'b', 'c'],
+                                   size=(300, -1))
         self.member_label = wx.StaticText(self.display, wx.ID_ANY, "Actua Member:")
 
         self.output = wx.TextCtrl(self.display, wx.ID_ANY, size=(450, 600), style=wx.TE_MULTILINE)
-        self.remove_button = wx.Button(self.display, wx.ID_ANY, "Remove Items")
+        # self.remove_button = wx.Button(self.display, wx.ID_ANY, "Remove Items")
 
         self.title.SetFont(wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL))
         self.output.SetEditable(False)
         self.http_upload_button.Disable()
-        self.remove_button.Disable()
+        # self.remove_button.Disable()
 
         self.initiatives.Disable()
         self.members.Disable()
 
         self.list = AutoWidthListCtrl(self.display, size=(300, 400))
-        self.list.InsertColumn(0, 'Item No.', width=60)
-        self.list.InsertColumn(1, 'Button No.', width=80)
-        self.list.InsertColumn(2, 'Action Name', width=100)
+        self.generate_list_cols()
 
         wrapper = wx.BoxSizer(wx.VERTICAL)
         top = wx.BoxSizer(wx.HORIZONTAL)
@@ -71,7 +72,7 @@ class AppFrame(wx.Frame):
 
         data.Add(self.list, 0, wx.ALL, 5)
 
-        data_buttons.Add(self.remove_button, 0, wx.ALL, 5)
+        # data_buttons.Add(self.remove_button, 0, wx.ALL, 5)
         data_buttons.Add(self.http_upload_button, 0, wx.ALL, 5)
 
         data_control.Add(data_buttons)
@@ -102,7 +103,9 @@ class AppFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self._on_upload_action, self.arduino_upload_button)
         self.Bind(wx.EVT_BUTTON, self._on_http_action, self.http_upload_button)
         self.Bind(wx.EVT_BUTTON, self._on_cancel_action, self.cancel_button)
-        self.Bind(wx.EVT_BUTTON, self._on_remove_button, self.remove_button)
+        # self.Bind(wx.EVT_BUTTON, self._on_remove_button, self.remove_button)
+
+        self.Bind(wx.EVT_COMBOBOX, self._on_init_select, self.initiatives)
 
         self.CreateStatusBar()
 
@@ -117,9 +120,18 @@ class AppFrame(wx.Frame):
 
         self.Show(True)
 
+    def generate_list_cols(self):
+        self.list.InsertColumn(0, 'Item No.', width=60)
+        self.list.InsertColumn(1, 'Action', width=140)
+        self.list.InsertColumn(2, 'Date', width=80)
+
+    def _on_init_select(self, event):
+        print "Initiative Select: " + self.initiatives.GetValue()
+
+        self.apply_initiative(self.initiatives.GetValue())
+
     def _on_remove_button(self, event):
         print "Remove Button"
-        pass
 
     def set_controller(self, controller):
         self.controller = controller
@@ -147,11 +159,24 @@ class AppFrame(wx.Frame):
 
     def _on_cancel_action(self, events):
         print "Cancel Action"
+        self.reset()
+
+    def reset(self):
         self.output.Clear()
         self.http_upload_button.Disable()
         self.arduino_upload_button.Enable()
+        self.initiatives.Disable()
+        self.members.Disable()
         self.controller.reset()
+        self.reset_list()
+
+    def reset_list(self):
         self.list.ClearAll()
+        self.listCount = 0
+
+        # Calling list.ClearAll() removes columns
+        # so  we must re-generate them.
+        self.generate_list_cols()
 
     def _on_upload_action(self, event):
         """
@@ -165,7 +190,7 @@ class AppFrame(wx.Frame):
         if not self.controller:
             raise RuntimeError("Controller not set, Upload button click not handled.")
         else:
-            self.output.Clear()
+            self.reset()
             if self.controller.upload(self.input1.GetValue()):
                 self.http_upload_button.Enable()
                 self.arduino_upload_button.Disable()
@@ -175,12 +200,14 @@ class AppFrame(wx.Frame):
                 self.controller.show_data()
                 self.display_message("-------------------------")
                 self.display_message("Select 'Upload to Web' to send this data to the web.")
+                data = self.controller.get_data()
 
-        data = self.controller.get_data()
-
-        if data:
-            for d in data:
-                self.add_list_item(d.get_list_rep())
+                if data:
+                    for d in data:
+                        self.add_list_item(d.get_list_rep())
+                    self.apply_initiative(self.initiatives.GetValue())
+            else:
+                self.reset()
 
     def display_message(self, message, level=1):
         """
@@ -198,7 +225,7 @@ class AppFrame(wx.Frame):
 
         s += message
 
-        self.output.AppendText(s+"\n")
+        self.output.AppendText(s + "\n")
 
     def populate(self):
 
@@ -219,3 +246,28 @@ class AppFrame(wx.Frame):
             self.members.SetValue(m[0])
 
         return None
+
+    def apply_tags_to_list(self, tags):
+
+        rows = self.list.GetItemCount()
+
+        for row in range(rows):
+            # we only care about the button column, column 1
+            item = self.list.GetItem(itemId=row, col=1)
+
+            val = item.GetText()
+
+            try:
+                val = int(val) - 1 # subtract 1 b/c action numbering starts at 1
+                val = tags[val].get_name()
+                self.list.SetStringItem(row, 1, str(val))
+
+            except Exception as e:
+                print e
+                continue
+
+    def apply_initiative(self, init_name):
+
+        tags = self.controller.get_tags_by_init(init_name)
+
+        self.apply_tags_to_list(tags)

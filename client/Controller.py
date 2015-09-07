@@ -63,7 +63,6 @@ class Controller:
 
     def reset(self):
         self.data = []
-        self.initiatives = []
         self.serial.reset()
 
     def init(self):
@@ -105,3 +104,9 @@ class Controller:
 
     def get_data(self):
         return self.serial.get_data()
+
+    def get_tags_by_init(self, init_name):
+
+        for i in self.initiatives:
+            if i.get_name() == init_name:
+                return i.get_tags()
