@@ -2,7 +2,7 @@
  * Created by sdiemert on 15-08-30
  */
 
-var Event      = require("./models/Event").Evert;
+var Event      = require("./models/Event").Event;
 var Initiative = require("./models/Initiative").Initiative;
 var Tag        = require("./models/Tag").Tag;
 
