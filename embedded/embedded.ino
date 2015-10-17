@@ -37,22 +37,22 @@ void setup() {
 
     setTime(12, 30, 30, 15, 10, 2015);
 
-    //Serial.begin(9600);
+    Serial.begin(9600);
 
-    client = new ClientInterface((HardwareSerial *)&Serial);
+    //client = new ClientInterface((HardwareSerial *)&Serial);
 
 }
 
 void loop() {
 
-    if(client->send_events(events, events_count, &sync_packet)){
+    /*if(client->send_events(events, events_count, &sync_packet)){
 
         events_count = 0;
 
         //syncronize the embedded clock with the host.
         setTime(sync_packet.time.hour,sync_packet.time.min, 0, sync_packet.time.day, sync_packet.time.month, (int)sync_packet.time.year);
 
-    }
+    }*/
 
     if (digitalRead(BUTTON1) == LOW) {
 
@@ -69,7 +69,7 @@ void loop() {
             events[events_count].action = 1;
             events_count++;
             delay(200); //this delay helps reduce noisey presses.
-            //Serial.println(events_count);
+            Serial.println(events_count);
 
         }
 
@@ -98,7 +98,7 @@ void loop() {
             events[events_count].action = 2;
             events_count++;
             delay(200); //this delay helps reduce noisey presses.
-            //Serial.println(events_count);
+            Serial.println(events_count);
 
         }
 
@@ -125,7 +125,7 @@ void loop() {
             events[events_count].action = 3;
             events_count++;
             delay(200); //this delay helps reduce noisey presses.
-            //Serial.println(events_count);
+            Serial.println(events_count);
 
         }
 
