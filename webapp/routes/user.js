@@ -3,7 +3,7 @@ var router  = express.Router();
 
 var util = require('util');
 
-var memberManager = require("../lib/MemberManager")();
+var userManager = require("../lib/UserManager")();
 var eventManager  = require("../lib/EventManager")();
 
 /**
@@ -11,7 +11,7 @@ var eventManager  = require("../lib/EventManager")();
  */
 router.get('/', function (req, res) {
 
-    memberManager.getMembers(null, function (err, m) {
+    userManager.getUsers(null, function (err, m) {
 
         if (err) {
             return res.status(500);
@@ -30,7 +30,7 @@ router.get('/', function (req, res) {
  */
 router.get('/:name/:format?', function (req, res) {
 
-    memberManager.getMembers(".*" + req.params.name.toLowerCase() + ".*", function (err, result) {
+    userManager.getUsers(".*" + req.params.name.toLowerCase() + ".*", function (err, result) {
 
         if (err) {
 
@@ -47,44 +47,12 @@ router.get('/:name/:format?', function (req, res) {
 
         } else {
 
-            eventManager.getEvents(req.params.name, null, null, function (err, events) {
+            console.log(util.inspect(result, false, null));
 
-                if (err) {
+            console.log(result[0].pageContent);
 
-                    console.log(err);
-                    res.status(500);
-                    res.send();
-
-                } else {
-
-                    var agg = eventManager.aggregate(events);
-
-                    eventManager.refine(agg, function (err, refined) {
-
-                        if (req.params.format && req.params.format === 'json') {
-
-                            return res.json({member: result[0], events: events});
-
-                        } else {
-
-                            console.log(util.inspect(refined));
-
-                            return res.render('member', {
-                                member       : result[0],
-                                refined      : refined,
-                                timeAggregate: eventManager.aggregateByDate(events)
-                            });
-
-                        }
-
-                    });
-
-
-                }
-
-
-            });
-
+            res.status(200);
+            return res.render('user', {content : result[0].pageContent});
 
         }
 
@@ -92,27 +60,5 @@ router.get('/:name/:format?', function (req, res) {
 
 });
 
-router.post("/:member/:initiative/:tag/:timestamp", function (req, res) {
-
-    eventManager.addEvent(req.params.member, req.params.initiative, req.params.tag, req.params.timestamp, null,
-    function (err) {
-
-        if (err) {
-            console.log(err);
-            res.status(500);
-            return res.send(err);
-        } else {
-
-            res.status(200);
-            return res.send();
-
-        }
-
-    }
-
-    )
-    ;
-
-});
 
 module.exports = router;

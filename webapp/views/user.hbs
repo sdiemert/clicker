@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+{{>head}}
+
+<body data-target=".navbar-fixed-top" data-spy="scroll">
+
+{{>navbar}}
+
+<div id='main' class="container">
+
+    <div id="buffer" style="height:50px;"></div>
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            {{{ content }}}
+
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

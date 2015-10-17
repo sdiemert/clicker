@@ -8,6 +8,6 @@ var userSchema = mongoose.Schema({
     collection : "users"
 });
 
-var Member = mongoose.model("User", userSchema, "users");
+var User = mongoose.model("User", userSchema, "users");
 
 module.exports = {User : User};
