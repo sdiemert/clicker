@@ -10,6 +10,7 @@ var routes     = require('./routes/index');
 var members    = require('./routes/members');
 var status     = require('./routes/status');
 var initiatives = require('./routes/initiatives');
+var downloads = require('./routes/downloads');
 
 process.env.MONGO = process.env.MONGO || "localhost:27017";
 
@@ -67,6 +68,7 @@ app.use('/', routes);
 app.use('/members', members);
 app.use('/status', status);
 app.use('/initiatives', initiatives);
+app.use('/downloads', downloads);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
