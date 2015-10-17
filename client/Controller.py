@@ -85,6 +85,7 @@ class Controller:
 
         # Check that the remote host can be connected to.
 
+        
         if not self.http.check_remote():
             raise Exception("Could not contact server at: " + str(self.http.host) + " on port: " + str(self.http.port))
 
