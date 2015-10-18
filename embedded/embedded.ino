@@ -45,14 +45,14 @@ void setup() {
 
 void loop() {
 
-    /*if(client->send_events(events, events_count, &sync_packet)){
+    if(client->send_events(events, events_count, &sync_packet)){
 
         events_count = 0;
 
         //syncronize the embedded clock with the host.
         setTime(sync_packet.time.hour,sync_packet.time.min, 0, sync_packet.time.day, sync_packet.time.month, (int)sync_packet.time.year);
 
-    }*/
+    }
 
     if (digitalRead(BUTTON1) == LOW) {
 
