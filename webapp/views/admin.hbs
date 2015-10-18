@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+{{>head}}
+
+<body data-target=".navbar-fixed-top" data-spy="scroll">
+
+{{>navbar}}
+
+<div id='main' class="container">
+
+    <div id="buffer" style="height:50px;"></div>
+
+    <div class="row">
+        <div class="col-sm-12">
+
+            <h2>SPARC Change Admin Panel</h2>
+            <hr>
+
+            <div class="row">
+
+                <div class="col-xs-11 col-xs-offset-1">
+
+                    <div class='row'>
+
+                        <h3>Initiative Management</h3>
+
+                        <div class="col-xs-6">
+
+
+                            <form class="form">
+                                <select multiple class="form-control">
+                                    {{#each inits}}
+
+                                        <option onclick="showTags('{{@key}}');" value="{{name}}">{{name}}</option>
+
+                                    {{/each}}
+                                </select>
+                            </form>
+                            <br>
+
+                            <a class="pull-left" href="">
+                                <button class="btn btn-danger">Remove</button>
+                            </a>
+                            <a class='pull-right' href="">
+                                <button class="btn btn-success">Add Initiative</button>
+                            </a>
+
+                        </div>
+
+                        <div class="col-xs-6">
+
+
+                            {{#each inits}}
+                                <div id="tags-{{@key}}">
+                                    <form class="form">
+                                        <select multiple class="form-control">
+
+                                            {{#each this.tags}}
+                                                <option value="{{initiative}}-{{name}}">{{name}}</option>
+                                            {{/each}}
+
+                                        </select>
+                                    </form>
+                                </div>
+                            {{/each}}
+                            <br>
+
+                            <a class="pull-left" href="">
+                                <button class="btn btn-danger">Remove</button>
+                            </a>
+                            <a class='pull-right' href="">
+                                <button class="btn btn-success">Add Tag</button>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <h3>User Management </h3>
+
+                        <div class="col-xs-6">
+
+
+                            <form class="form">
+                                <select multiple class="form-control">
+                                    {{#each users}}
+
+                                        <option value="{{name}}">{{name}}</option>
+
+                                    {{/each}}
+                                </select>
+                            </form>
+                            <br>
+
+                            <div class="row">
+                                <div class="col-xs-7">
+                                    <a class="pull-left" href="">
+                                        <button class="btn btn-danger">Remove</button>
+                                    </a>
+                                </div>
+                                <div class="col-xs-3">
+                                    <a class=''>
+                                        <button class="btn btn-primary">Edit User</button>
+                                    </a>
+                                </div>
+                                <div class="col-xs-2">
+                                    <a class='pull-right'>
+                                        <button class="btn btn-success">Add User</button>
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var inits = {{{json inits}}};
+
+    function showTags(initName) {
+
+
+        for (var i in inits) {
+
+            $("#tags-" + i).hide();
+
+        }
+
+        $("#tags-" + initName).show();
+
+    }
+
+    //hide all but one
+
+    for (var i in inits) {
+
+        $("#tags-" + i).hide();
+
+    }
+
+    $("#tags-" + Object.keys(inits)[0]).show();
+
+
+</script>
+
+
+</body>
+</html>

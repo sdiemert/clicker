@@ -6,12 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose');
 
-var routes     = require('./routes/index');
-var members    = require('./routes/members');
-var status     = require('./routes/status');
+var routes      = require('./routes/index');
+var members     = require('./routes/members');
+var status      = require('./routes/status');
 var initiatives = require('./routes/initiatives');
-var downloads = require('./routes/downloads');
-var users = require('./routes/user');
+var downloads   = require('./routes/downloads');
+var users       = require('./routes/user');
+var admin       = require('./routes/admin');
 
 process.env.MONGO = process.env.MONGO || "localhost:27017";
 
@@ -71,6 +72,7 @@ app.use('/status', status);
 app.use('/initiatives', initiatives);
 app.use('/downloads', downloads);
 app.use('/users', users);
+app.use('/admin', admin);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
