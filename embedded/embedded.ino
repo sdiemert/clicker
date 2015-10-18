@@ -39,7 +39,7 @@ void setup() {
 
     Serial.begin(9600);
 
-    //client = new ClientInterface((HardwareSerial *)&Serial);
+    client = new ClientInterface((HardwareSerial *)&Serial);
 
 }
 
