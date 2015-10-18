@@ -88,7 +88,7 @@
                                 <select multiple class="form-control">
                                     {{#each users}}
 
-                                        <option value="{{name}}">{{name}}</option>
+                                        <option value="{{name}}">{{name}} {{#if admin}}(Admin){{/if}}</option>
 
                                     {{/each}}
                                 </select>

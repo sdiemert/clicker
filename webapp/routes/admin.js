@@ -7,14 +7,13 @@ var initManager = require("../lib/InitiativeManager")();
 
 function auth(req, res, next) {
 
-    console.log(util.inspect(req.session));
-
     if (req.session.user) {
         return next();
     }
 
 
     users.find({name: req.body.username, password: req.body.password}).exec(
+
         function (err, result) {
 
             if (err) {
@@ -31,8 +30,6 @@ function auth(req, res, next) {
             req.session.user = {
                 name: result[0].name
             };
-
-            console.log(util.inspect(req.session));
 
             return next();
 
@@ -52,8 +49,6 @@ router.get('/',
                 return res.status(500);
 
             } else {
-
-                console.log(util.inspect(users, false, null));
 
                 initManager.getInits(null, function (err, inits) {
 
