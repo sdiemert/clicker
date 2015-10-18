@@ -85,6 +85,26 @@ function InitiativeManager(proc) {
 
     };
 
+    var addInit = function(name, next){
+
+        Initiative.update(
+            {name : name},
+            {},
+            {upsert : true},
+            function(err, result){
+
+                if(err) console.log(err);
+
+                next(err);
+
+            }
+
+        )
+
+    };
+
+
+    that.addInit = addInit;
     that.getInits = getInits;
 
     return that;

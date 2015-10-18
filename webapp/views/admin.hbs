@@ -38,11 +38,11 @@
                             </form>
                             <br>
 
-                            <a class="pull-left" href="">
+                            <a class="pull-left" href="#">
                                 <button class="btn btn-danger">Remove</button>
                             </a>
-                            <a class='pull-right' href="">
-                                <button class="btn btn-success">Add Initiative</button>
+                            <a class="pull-right" href="#">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#addInitModal">Add Initiative</button>
                             </a>
 
                         </div>
@@ -125,6 +125,26 @@
     </div>
 </div>
 
+<div id="addInitModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Initiative</h4>
+            </div>
+            <div class="modal-body">
+                <input id="new-init-name" type="text"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button onclick='newInit();' type="button" class="btn btn-success" data-dismiss="modal">Add</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <script>
 
     var inits = {{{json inits}}};
@@ -152,6 +172,19 @@
 
     $("#tags-" + Object.keys(inits)[0]).show();
 
+
+</script>
+
+<script>
+
+    function newInit(name){
+
+        name = name || $('#new-init-name').val();
+
+        var x = $.post('/initiatives/add/initiative/'+name).done(function(data){
+            console.log(data);
+        });
+    }
 
 </script>
 
