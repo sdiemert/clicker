@@ -92,26 +92,24 @@ router.get('/:name/:format?', function (req, res) {
 
 });
 
-router.post("/:member/:initiative/:tag/:timestamp", function (req, res) {
+router.post("/:member/:initiative/:tag/:timestamp/:user?", function (req, res) {
 
-    eventManager.addEvent(req.params.member, req.params.initiative, req.params.tag, req.params.timestamp, null,
-    function (err) {
+    eventManager.addEvent(req.params.member, req.params.initiative, req.params.tag, req.params.timestamp, req.params.user,
+        function (err) {
 
-        if (err) {
-            console.log(err);
-            res.status(500);
-            return res.send(err);
-        } else {
+            if (err) {
+                console.log(err);
+                res.status(500);
+                return res.send(err);
+            } else {
 
-            res.status(200);
-            return res.send();
+                res.status(200);
+                return res.send();
+
+            }
 
         }
-
-    }
-
-    )
-    ;
+    );
 
 });
 

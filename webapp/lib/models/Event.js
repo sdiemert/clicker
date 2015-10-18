@@ -5,7 +5,7 @@ var eventSchema = new mongoose.Schema({
     member : String,
     time : Number,
     initiative: String,
-    user : {type : mongoose.Schema.Types.ObjectId, default: null}
+    user : {type:String, default: null}
 }, {
     collection : "events"
 });

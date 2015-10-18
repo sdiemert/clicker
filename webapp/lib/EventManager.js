@@ -113,8 +113,10 @@ function EventManager(proc) {
 
     /**
      * @param member {String}
+     * @param initiative {String}
      * @param tag {String}
      * @param timestamp {String}
+     * @param user {String{
      * @param next {Function}
      */
     var addEvent = function (member, initiative, tag, timestamp, user, next) {
