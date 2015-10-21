@@ -53,7 +53,7 @@
                             {{#each inits}}
                                 <div id="tags-{{@key}}">
                                     <form class="form">
-                                        <select multiple class="form-control">
+                                        <select disabled multiple class="form-control">
 
                                             {{#each this.tags}}
                                                 <option value="{{initiative}}-{{name}}">{{name}}</option>
@@ -63,14 +63,6 @@
                                     </form>
                                 </div>
                             {{/each}}
-                            <br>
-
-                            <a class="pull-left" href="">
-                                <button class="btn btn-danger">Remove</button>
-                            </a>
-                            <a class='pull-right' href="">
-                                <button class="btn btn-success">Add Tag</button>
-                            </a>
 
                         </div>
 
@@ -135,6 +127,9 @@
             </div>
             <div class="modal-body">
                 <input id="new-init-name" type="text"/>
+                <input id="new-init-t1" type="text"/>
+                <input id="new-init-t2" type="text"/>
+                <input id="new-init-t3" type="text"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -177,13 +172,21 @@
 
 <script>
 
-    function newInit(name){
+    function newInit(name, t1, t2, t3){
 
         name = name || $('#new-init-name').val();
+        t1 = t1 || $('#new-init-t1').val();
+        t2 = t2 || $('#new-init-t2').val();
+        t3 = t3 || $('#new-init-t3').val();
 
-        var x = $.post('/initiatives/add/initiative/'+name).done(function(data){
-            console.log(data);
-        });
+        var data =  {name : name, tags :[t1, t2, t3]};
+
+        var x = $.ajax('/initiatives/add/'+name,{
+                data : JSON.stringify(data),
+                contentType : 'application/json',
+                type : 'POST'
+            }
+        );
     }
 
 </script>

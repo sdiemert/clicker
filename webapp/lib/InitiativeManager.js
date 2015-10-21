@@ -48,16 +48,16 @@ function InitiativeManager(proc) {
                     inits,
                     function (i, cb) {
 
-                        toReturn[i._id] = {name : i.name, tags : []};
+                        toReturn[i._id] = {name: i.name, tags: []};
 
                         Tag.find({
-                            initiative: { $regex: i._id, $options : 'g'}
+                            initiative: {$regex: i._id, $options: 'g'}
                         }).exec(function (err, r) {
                             if (err) {
                                 cb(err);
                             } else {
 
-                                for(var x in r){
+                                for (var x in r) {
 
                                     toReturn[i._id].tags.push(r[x])
 
@@ -85,26 +85,52 @@ function InitiativeManager(proc) {
 
     };
 
-    var addInit = function(name, next){
+    var make_id = function (x) {
+        x = x.replace(" ", "_");
+        return x.toLowerCase();
+    };
+
+    var addInit = function (name, tags, next) {
+
+        console.log(tags);
 
         Initiative.update(
-            {name : name},
+            {_id: make_id(name), name: name},
             {},
-            {upsert : true},
-            function(err, result){
+            {upsert: true}
+        ).exec(function (err, result_i) {
 
-                if(err) console.log(err);
+            if (err) {
+                console.log(err);
+                return next(err);
+            } else {
+                async.each(
+                    tags,
+                    function (t, done) {
 
-                next(err);
+                        Tag.update(
+                            {_id: make_id(t), initiative: make_id(name), name: t},
+                            {},
+                            {upsert: true}
+                        ).exec(
+                            function (err, result_t) {
+                                return done(err);
+                            }
+                        );
+
+                    }, function (err) {
+                        return next(err);
+                    }
+                );
 
             }
 
-        )
+        })
 
     };
 
 
-    that.addInit = addInit;
+    that.addInit  = addInit;
     that.getInits = getInits;
 
     return that;

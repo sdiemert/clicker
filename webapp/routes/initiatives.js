@@ -20,22 +20,27 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.post('/add/initiative/:name', function(res,req){
+router.post('/add/:name', function(req,res){
 
-    initManager.addInit(null, function(err, result){
+        console.log(req.body);
+        console.log(req.params);
+        console.log(req.query);
 
-        if(err){
-            console.log("Error:"+err);
-            res.status(500);
-            return res.send("ERROR");
-        }else{
-            console.log(util.inspect(result));
-            res.status(200);
-            return res.json(result);
-        }
+        initManager.addInit(req.params.name, req.body["tags"], function(err, result){
 
-    });
+            if(err){
+                console.log("Error:"+err);
+                res.status(500);
+                return res.send("ERROR");
+            }else{
+                console.log(util.inspect(result));
+                res.status(200);
+                return res.json(result);
+            }
 
-});
+        });
+
+    }
+);
 
 module.exports = router;
