@@ -12,7 +12,11 @@ function auth(req, res, next) {
     }
 
 
-    users.find({name: req.body.username, password: req.body.password}).exec(
+    users.find(
+        {
+            name: {$regex : '^'+req.body.username+'$', $options : 'g'},
+            password: {$regex : '^'+req.body.password+'$', $options : 'g'}
+        }).exec(
 
         function (err, result) {
 
@@ -62,6 +66,13 @@ router.get('/',
         });
 
     });
+
+router.get("/logout",
+    function(req, res){
+        delete req.session.user;
+        return res.redirect('/home');
+    }
+);
 
 router.get('/login',
     function (req, res) {
