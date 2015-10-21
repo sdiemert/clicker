@@ -142,7 +142,7 @@ function EventManager(proc) {
 
             for (var t = 0; t < tags.length; t++) {
 
-                if (data[inits[i]._id][tags[t]._id]) {
+                if (data[inits[i]] && data[inits[i]._id][tags[t]._id]) {
 
                     data[inits[i]._id][tags[t].name] = data[inits[i]._id][tags[t]._id];
                     delete data[inits[i]._id][tags[t]._id];
