@@ -46,7 +46,34 @@ function UserManager(proc) {
 
     };
 
+    var newUser = function(name, pass, admin, blob, next){
 
+        var u = new User({id : name.toLowerCase(), name : name.toLowerCase(), admin : admin, pageContent:blob, password : pass});
+
+        u.save(function(err){
+            next(err);
+        });
+
+    };
+
+    var removeUser = function(name, next){
+
+        User.remove(
+            {
+                name : {$regex : "^"+name+"$", $options: "g" },
+                admin : false
+            },
+            function(err){
+                next(err);
+
+            }
+        );
+
+    };
+
+
+    that.remove = removeUser;
+    that.new = newUser;
     that.getUsers = getUsers;
 
     return that;

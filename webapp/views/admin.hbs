@@ -16,7 +16,9 @@
             <div class="row">
                 <div class="col-xs-8"><h2>SPARC Change Admin Panel</h2></div>
 
-                <div class="col-xs-4"><a style='margin-top:25px;' class="pull-right" href="/admin/logout"><button class="btn btn-warning">Logout</button></a></div>
+                <div class="col-xs-4"><a style='margin-top:25px;' class="pull-right" href="/admin/logout">
+                    <button class="btn btn-warning">Logout</button>
+                </a></div>
 
             </div>
 
@@ -48,7 +50,9 @@
                                 <button onclick="removeInit();" class="btn btn-danger">Remove</button>
                             </a>
                             <a class="pull-right" href="#">
-                                <button class="btn btn-success" data-toggle="modal" data-target="#addInitModal">Add Initiative</button>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#addInitModal">Add
+                                    Initiative
+                                </button>
                             </a>
 
                         </div>
@@ -83,7 +87,7 @@
 
 
                             <form class="form">
-                                <select multiple class="form-control">
+                                <select id="user-select" multiple class="form-control">
                                     {{#each users}}
 
                                         <option value="{{name}}">{{name}} {{#if admin}}(Admin){{/if}}</option>
@@ -95,18 +99,18 @@
 
                             <div class="row">
                                 <div class="col-xs-7">
-                                    <a class="pull-left" href="">
-                                        <button class="btn btn-danger">Remove</button>
+                                    <a class="pull-left">
+                                        <button onclick="removeUser();" class="btn btn-danger">Remove</button>
                                     </a>
                                 </div>
                                 <div class="col-xs-3">
                                     <a class=''>
-                                        <button class="btn btn-primary">Edit User</button>
+                                        <button disabled class="btn btn-primary">Edit User</button>
                                     </a>
                                 </div>
                                 <div class="col-xs-2">
                                     <a class='pull-right'>
-                                        <button class="btn btn-success">Add User</button>
+                                        <button class="btn btn-success" data-toggle="modal" data-target="#addUserModal">Add User</button>
                                     </a>
                                 </div>
 
@@ -132,14 +136,94 @@
                 <h4 class="modal-title">Add Initiative</h4>
             </div>
             <div class="modal-body">
-                <input id="new-init-name" type="text"/>
-                <input id="new-init-t1" type="text"/>
-                <input id="new-init-t2" type="text"/>
-                <input id="new-init-t3" type="text"/>
+
+                <p>Enter the name of the initiative you would like to create. Assign exactly three tags.</p>
+
+
+                <form>
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Initiative Name' class="form-control" id="new-init-name" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Tag 1' class="form-control" id="new-init-t1" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Tag 2' class="form-control" id="new-init-t2" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Tag 3' class="form-control" id="new-init-t3" type="text"/>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button onclick='newInit();' type="button" class="btn btn-success" data-dismiss="modal">Add</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="addUserModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add User</h4>
+            </div>
+            <div class="modal-body">
+
+                <p>Create new user. <b>Only create a password if the user is an admin.</b></p>
+
+                <form>
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Username' class="form-control" id="new-user-name" type="text"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <label for="id-user-admin">Admin
+                                <input id="new-user-admin" type="checkbox"/>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Password' width="100px;" class="form-control" id="new-user-password" type="password"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <input placeholder='Password Again' width="100px;" class="form-control" id="new-user-password2" type="password"/>
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xs-12">
+                            <textarea placeholder='<div> YOUR PAGE HERE </div>' class="form-control" id="new-user-html"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button onclick='newUser();' type="button" class="btn btn-success" data-dismiss="modal">Add</button>
             </div>
         </div>
 
@@ -178,44 +262,96 @@
 
 <script>
 
-    function removeInit(x){
+    function removeInit(x) {
 
         x = x || $("#init-select").find(":selected").val();
 
         console.log(x);
 
-        var r = $.ajax('/initiatives/remove/'+x,{
-                    contentType : 'application/json',
-                    type : 'POST',
-                    success:function(){
+        var r = $.ajax('/initiatives/remove/' + x, {
+                    contentType: 'application/json',
+                    type       : 'POST',
+                    success    : function () {
                         location.reload(true);
                     }
                 }
-        ).done(function(){
+        ).done(function () {
                     location.reload(true);
                 });
     }
 
-    function newInit(name, t1, t2, t3){
+    function newInit(name, t1, t2, t3) {
 
         name = name || $('#new-init-name').val();
-        t1 = t1 || $('#new-init-t1').val();
-        t2 = t2 || $('#new-init-t2').val();
-        t3 = t3 || $('#new-init-t3').val();
+        t1   = t1 || $('#new-init-t1').val();
+        t2   = t2 || $('#new-init-t2').val();
+        t3   = t3 || $('#new-init-t3').val();
 
-        var data =  {name : name, tags :[t1, t2, t3]};
+        var data = {name: name, tags: [t1, t2, t3]};
 
-        var x = $.ajax('/initiatives/add/'+name,{
-                data : JSON.stringify(data),
-                contentType : 'application/json',
-                type : 'POST',
-                success:function(){
-                    location.reload(true);
+        var x = $.ajax('/initiatives/add/' + name, {
+                    data       : JSON.stringify(data),
+                    contentType: 'application/json',
+                    type       : 'POST',
+                    success    : function () {
+                        location.reload(true);
+                    }
                 }
-            }
-        ).done(function(){
-            location.reload(true);
+        ).done(function () {
+                    location.reload(true);
         });
+    }
+
+    function newUser(name, passwd, admin, blob){
+
+        name = name || $("#new-user-name").val();
+        pass = passwd || $("#new-user-password").val();
+        admin = admin || $("#new-user-admin").is(":checked");
+        blob = blob || $("#new-user-html").val();
+
+        passwd2 = $("#new-user-password2").val();
+
+        if(pass != passwd2){
+            alert("Password fields do not match!");
+            return;
+        }
+
+        var data = {name: name, pass : pass, admin : admin, blob : blob};
+
+        console.log(data);
+
+        var x = $.ajax('/users/add/' + name, {
+                    data       : JSON.stringify(data),
+                    contentType: 'application/json',
+                    type       : 'POST',
+                    success    : function () {
+                        location.reload(true);
+                    }
+                }
+        ).done(function () {
+                    location.reload(true);
+                });
+
+    }
+
+    function removeUser(x){
+
+        x = x || $("#user-select").find(":selected").val();
+
+        console.log(x);
+
+        var x = $.ajax('/users/remove/' + x, {
+                    contentType: 'application/json',
+                    type       : 'POST',
+                    success    : function () {
+                        location.reload(true);
+                    }
+                }
+        ).done(function () {
+                    location.reload(true);
+                });
+
+
     }
 
 </script>

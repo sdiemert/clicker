@@ -15,7 +15,8 @@ function auth(req, res, next) {
     users.find(
         {
             name: {$regex : '^'+req.body.username+'$', $options : 'g'},
-            password: {$regex : '^'+req.body.password+'$', $options : 'g'}
+            password: {$regex : '^'+req.body.password+'$', $options : 'g'},
+            admin : true
         }).exec(
 
         function (err, result) {

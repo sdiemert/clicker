@@ -47,10 +47,6 @@ router.get('/:name/:format?', function (req, res) {
 
         } else {
 
-            console.log(util.inspect(result, false, null));
-
-            console.log(result[0].pageContent);
-
             res.status(200);
             return res.render('user', {content : result[0].pageContent});
 
@@ -60,5 +56,36 @@ router.get('/:name/:format?', function (req, res) {
 
 });
 
+
+router.post('/add/:name',
+    function(req,res){
+
+        userManager.new(req.params.name, req.body.admin, req.body.pass, req.body.blob, function(err, result){
+
+            res.status(200);
+            return res.send();
+
+        });
+
+    }
+);
+
+router.post('/remove/:name',
+    function(req, res){
+
+        if(req.body.admin){
+            res.status(401);
+            return res.send();
+        }else{
+
+            userManager.remove(req.params.name, function(err, result){
+                res.status(200);
+                return res.send();
+            });
+
+        }
+
+    }
+);
 
 module.exports = router;
