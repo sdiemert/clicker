@@ -1,9 +1,0 @@
-('/Users/sdiemert/workspace/actua/clicker/client/dist/app',
- False,
- False,
- None,
- None,
- [],
- None,
- False,
- 1445106307)

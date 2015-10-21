@@ -1,6 +1,7 @@
 __author__ = 'sdiemert'
 
 from datetime import date
+import time
 
 class Data:
 
@@ -12,6 +13,9 @@ class Data:
         self.day = day
         self.month = month
         self.year = year
+
+        self.initiative = None
+        self.tag = None
 
     def is_complete(self):
 
@@ -36,10 +40,16 @@ class Data:
 
         return (str(self.action), str(d.isoformat()))
 
+    def getUTCSeconds(self):
+        d = date(int(self.year), int(self.month), int(self.day))
+        return int(time.mktime(d.timetuple()))
+
     def __str__(self):
 
         s = "< Data : { "
         s += "action:"+str(self.action)+", "
+        s += "init:"+str(self.initiative)+", "
+        s += "tag:"+str(self.tag)+", "
         s += "min:"+str(self.min)+", "
         s += "hour:"+str(self.hour)+", "
         s += "day:"+str(self.day)+", "

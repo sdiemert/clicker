@@ -138,6 +138,7 @@ class AppFrame(wx.Frame):
 
     def _on_http_action(self, event):
         print "HTTP Action"
+        self.controller.send_data()
         pass
 
     def add_list_item(self, val):

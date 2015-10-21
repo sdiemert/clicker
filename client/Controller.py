@@ -85,7 +85,6 @@ class Controller:
 
         # Check that the remote host can be connected to.
 
-        
         if not self.http.check_remote():
             raise Exception("Could not contact server at: " + str(self.http.host) + " on port: " + str(self.http.port))
 
@@ -96,18 +95,60 @@ class Controller:
 
     def show_data(self):
 
-        d = self.serial.get_data()
+        self.data = self.serial.get_data()
 
-        if d:
+        if self.data:
             self._view_message("Data is: ")
-            for i in d:
+            for i in self.data:
                 self._view_message(str(i))
 
     def get_data(self):
-        return self.serial.get_data()
+        if self.data:
+            return self.data
+        else:
+            self.data = self.serial.get_data()
+            return self.data
 
     def get_tags_by_init(self, init_name):
 
         for i in self.initiatives:
             if i.get_name() == init_name:
                 return i.get_tags()
+
+    def find_init_by_name(self, name):
+
+        for i in self.initiatives:
+            if i.get_name() == name:
+                return i
+
+        return None
+
+    def apply_init_to_data(self, init, data):
+
+        tags = self.get_tags_by_init(init)
+
+        print tags
+
+        for d in self.data:
+            d.initiative = self.find_init_by_name(init)
+            d.tag = d.initiative.get_tags()[d.action-1]
+
+        return self.data
+
+    def get_member_from_name(self, name):
+        for m in self.members:
+            if m.name == name:
+                return m
+
+        return None
+
+    def send_data(self):
+        self.apply_init_to_data(self.view.initiatives.GetValue(), self.data)
+
+        member = self.get_member_from_name(self.view.members.GetValue())
+
+        print member
+
+        for d in self.data:
+            print d
+            self.http.send_data(member.get_id(), d.initiative.get_id(), d.tag.get_id(),d.getUTCSeconds())

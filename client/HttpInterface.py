@@ -39,10 +39,25 @@ class HttpInterface:
         except Exception as e:
             print e
             print "Could not connect to: "+ str(self.host)+ " on port: "+str(self.port)
+            self.conn.close()
             return None
 
-    def send_data(self, user="", passwd="", data=[]):
-        pass
+    def send_data(self, member, initiative, tag, timestamp, user="", passwd=""):
+        try:
+            self.conn = httplib.HTTPConnection(self.host, self.port, timeout=self.timeout)
+            route = '/members/'+str(member)+'/'+str(initiative)+'/'+str(tag)+'/'+str(timestamp)
+            print route
+            self.conn.request("POST", route)
+            r = self.conn.getresponse()
+            if r.status != 200:
+                print "Got status code: "+str(r.status)
+
+        except Exception as e:
+            print e
+            print "Could not connect to: "+ str(self.host)+ " on port: "+str(self.port)
+
+        finally:
+            self.conn.close()
 
     def set_host(self, h):
         self.host = h
@@ -81,6 +96,7 @@ class HttpInterface:
 
             toReturn.append(tmpInit)
 
+        print toReturn
         return toReturn
 
     def fetch_members(self):
@@ -93,7 +109,6 @@ class HttpInterface:
             toReturn.append(Member(m['_id'], m['name'], m['city'], m['province']))
 
         return toReturn
-
 
     def __repr__(self):
         return "HttpInterface { host : " + str(self.host) + ", port : " + str(self.port) + " }"
