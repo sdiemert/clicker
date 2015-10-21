@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var initSchema = mongoose.Schema({
-    _id : String,
+    id : String,
     name : String
 }, {
     collection : "initiatives"

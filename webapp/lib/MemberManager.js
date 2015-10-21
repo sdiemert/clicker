@@ -17,7 +17,7 @@ function MemberManager(proc) {
      *
      * @throws {Error} if the next argument is not a valid function.
      *
-     * @param pattern {String} - matches on the _id field of the member's collection in mongo, defaults to '.*' if null.
+     * @param pattern {String} - matches on the id field of the member's collection in mongo, defaults to '.*' if null.
      * @param next {Function} - callback function, has signature: function(String, Array)
      *
      * @return {Array} - of member objects from the database.
@@ -33,7 +33,7 @@ function MemberManager(proc) {
 
 
         Member.find({
-            _id: {$regex: pattern, $options: 'g'}
+            id: {$regex: pattern, $options: 'g'}
         }).exec(function (err, results) {
 
             if (err) {

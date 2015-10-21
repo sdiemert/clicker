@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 
 var memberSchema = mongoose.Schema({
-    _id : String,
+    id : String,
     name : String,
     city : String,
     province : String

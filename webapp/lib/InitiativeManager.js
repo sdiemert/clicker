@@ -36,7 +36,7 @@ function InitiativeManager(proc) {
         var toReturn = {};
 
         Initiative.find({
-            _id: {$regex: pattern, $options: 'g'}
+            id: {$regex: pattern, $options: 'g'}
         }).exec(function (err, inits) {
 
             if (err) {
@@ -48,10 +48,10 @@ function InitiativeManager(proc) {
                     inits,
                     function (i, cb) {
 
-                        toReturn[i._id] = {name: i.name, tags: []};
+                        toReturn[i.id] = {name: i.name, tags: []};
 
                         Tag.find({
-                            initiative: {$regex: i._id, $options: 'g'}
+                            initiative: {$regex: i.id, $options: 'g'}
                         }).exec(function (err, r) {
                             if (err) {
                                 cb(err);
@@ -59,7 +59,7 @@ function InitiativeManager(proc) {
 
                                 for (var x in r) {
 
-                                    toReturn[i._id].tags.push(r[x])
+                                    toReturn[i.id].tags.push(r[x])
 
                                 }
 
@@ -94,39 +94,30 @@ function InitiativeManager(proc) {
 
         console.log(tags);
 
-        Initiative.update(
-            {_id: make_id(name), name: name},
-            {},
-            {upsert: true}
-        ).exec(function (err, result_i) {
+        var toSave = [];
 
-            if (err) {
-                console.log(err);
+        toSave.push(new Initiative({id: make_id(name), name: name}));
+
+        for (var t in tags) {
+
+            toSave.push(new Tag({id: make_id(tags[t]), name: tags[t], initiative: make_id(name)}));
+
+        }
+
+        var tmp = null;
+
+        async.each(
+            toSave,
+            function (item, done) {
+
+                item.save(function (err) {
+                    return done(err);
+                })
+            },
+            function (err) {
                 return next(err);
-            } else {
-                async.each(
-                    tags,
-                    function (t, done) {
-
-                        Tag.update(
-                            {_id: make_id(t), initiative: make_id(name), name: t},
-                            {},
-                            {upsert: true}
-                        ).exec(
-                            function (err, result_t) {
-                                return done(err);
-                            }
-                        );
-
-                    }, function (err) {
-                        return next(err);
-                    }
-                );
-
             }
-
-        })
-
+        );
     };
 
 
