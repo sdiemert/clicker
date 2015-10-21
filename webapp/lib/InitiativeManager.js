@@ -120,7 +120,26 @@ function InitiativeManager(proc) {
         );
     };
 
+    var removeInit = function(name, next){
 
+        Initiative.remove(
+            { name : name },
+            function(err, result){
+
+                Tag.remove(
+                    {initiative : make_id(name)},
+                    function(err, result){
+                        return next(err);
+                    }
+                );
+
+            }
+        );
+
+    };
+
+
+    that.removeInit  = removeInit;
     that.addInit  = addInit;
     that.getInits = getInits;
 

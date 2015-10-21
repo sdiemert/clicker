@@ -28,7 +28,7 @@
 
 
                             <form class="form">
-                                <select multiple class="form-control">
+                                <select id="init-select" multiple class="form-control">
                                     {{#each inits}}
 
                                         <option onclick="showTags('{{@key}}');" value="{{name}}">{{name}}</option>
@@ -39,7 +39,7 @@
                             <br>
 
                             <a class="pull-left" href="#">
-                                <button class="btn btn-danger">Remove</button>
+                                <button onclick="removeInit();" class="btn btn-danger">Remove</button>
                             </a>
                             <a class="pull-right" href="#">
                                 <button class="btn btn-success" data-toggle="modal" data-target="#addInitModal">Add Initiative</button>
@@ -172,6 +172,24 @@
 
 <script>
 
+    function removeInit(x){
+
+        x = x || $("#init-select").find(":selected").val();
+
+        console.log(x);
+
+        var r = $.ajax('/initiatives/remove/'+x,{
+                    contentType : 'application/json',
+                    type : 'POST',
+                    success:function(){
+                        location.reload(true);
+                    }
+                }
+        ).done(function(){
+                    location.reload(true);
+                });
+    }
+
     function newInit(name, t1, t2, t3){
 
         name = name || $('#new-init-name').val();
@@ -184,9 +202,14 @@
         var x = $.ajax('/initiatives/add/'+name,{
                 data : JSON.stringify(data),
                 contentType : 'application/json',
-                type : 'POST'
+                type : 'POST',
+                success:function(){
+                    location.reload(true);
+                }
             }
-        );
+        ).done(function(){
+            location.reload(true);
+        });
     }
 
 </script>

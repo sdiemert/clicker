@@ -22,10 +22,6 @@ router.get('/', function (req, res, next) {
 
 router.post('/add/:name', function(req,res){
 
-        console.log(req.body);
-        console.log(req.params);
-        console.log(req.query);
-
         initManager.addInit(req.params.name, req.body["tags"], function(err, result){
 
             if(err){
@@ -33,14 +29,22 @@ router.post('/add/:name', function(req,res){
                 res.status(500);
                 return res.send("ERROR");
             }else{
-                console.log(util.inspect(result));
                 res.status(200);
-                return res.json(result);
+                return res.send();
             }
 
         });
 
     }
 );
+
+router.post("/remove/:name", function(req, res){
+    initManager.removeInit(req.params.name, function(err, result){
+
+        res.status(200);
+        return res.send();
+
+    });
+});
 
 module.exports = router;

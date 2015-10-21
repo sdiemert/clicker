@@ -52,8 +52,6 @@ router.get('/',
 
                 initManager.getInits(null, function (err, inits) {
 
-                    console.log(util.inspect(inits, false, null));
-
                     res.status(200);
                     return res.render('admin', {users: m, inits: inits});
 

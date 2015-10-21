@@ -79,9 +79,7 @@ router.get('/:name/:format?', function (req, res) {
 
                     });
 
-
                 }
-
 
             });
 
