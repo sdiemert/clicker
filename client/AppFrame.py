@@ -13,7 +13,7 @@ class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
 
 class AppFrame(wx.Frame):
     def __init__(self, parent, title, controller=None):
-        wx.Frame.__init__(self, parent, title=title, size=(800, 600))
+        wx.Frame.__init__(self, parent, title=title, size=(1000, 800))
 
         self.listCount = 0
 
@@ -37,7 +37,7 @@ class AppFrame(wx.Frame):
                                    size=(300, -1))
         self.member_label = wx.StaticText(self.display, wx.ID_ANY, "Actua Member:")
 
-        self.output = wx.TextCtrl(self.display, wx.ID_ANY, size=(450, 600), style=wx.TE_MULTILINE)
+        self.output = wx.TextCtrl(self.display, wx.ID_ANY, size=(500, 600), style=wx.TE_MULTILINE)
         # self.remove_button = wx.Button(self.display, wx.ID_ANY, "Remove Items")
 
         self.title.SetFont(wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL))
@@ -48,7 +48,7 @@ class AppFrame(wx.Frame):
         self.initiatives.Disable()
         self.members.Disable()
 
-        self.list = AutoWidthListCtrl(self.display, size=(300, 400))
+        self.list = AutoWidthListCtrl(self.display, size=(400, 400))
         self.generate_list_cols()
 
         wrapper = wx.BoxSizer(wx.VERTICAL)
@@ -122,8 +122,9 @@ class AppFrame(wx.Frame):
 
     def generate_list_cols(self):
         self.list.InsertColumn(0, 'Item No.', width=60)
-        self.list.InsertColumn(1, 'Action', width=140)
-        self.list.InsertColumn(2, 'Date', width=80)
+        self.list.InsertColumn(1, 'Button', width=60)
+        self.list.InsertColumn(2, 'Action', width=140)
+        self.list.InsertColumn(3, 'Date', width=80)
 
     def _on_init_select(self, event):
         print "Initiative Select: " + self.initiatives.GetValue()
@@ -150,8 +151,10 @@ class AppFrame(wx.Frame):
 
         if index >= 0:
 
+            print val
+
             self.list.SetStringItem(index, 1, val[0])
-            self.list.SetStringItem(index, 2, val[1])
+            self.list.SetStringItem(index, 3, val[1])
             self.listCount += 1
             return True
 
@@ -256,12 +259,13 @@ class AppFrame(wx.Frame):
             # we only care about the button column, column 1
             item = self.list.GetItem(itemId=row, col=1)
 
-            val = item.GetText()
+            val_org = item.GetText()
 
             try:
-                val = int(val) - 1 # subtract 1 b/c action numbering starts at 1
-                val = tags[val].get_name()
-                self.list.SetStringItem(row, 1, str(val))
+                val = int(val_org) - 1 # subtract 1 b/c action numbering starts at 1
+                action = tags[val].get_name()
+                self.list.SetStringItem(row, 2, str(action))
+                self.list.SetStringItem(row, 1, str(val_org))
 
             except Exception as e:
                 print e

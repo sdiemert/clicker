@@ -150,5 +150,4 @@ class Controller:
         print member
 
         for d in self.data:
-            print d
             self.http.send_data(member.get_id(), d.initiative.get_id(), d.tag.get_id(),d.getUTCSeconds())

@@ -43,12 +43,18 @@ class HttpInterface:
             return None
 
     def send_data(self, member, initiative, tag, timestamp, user="", passwd=""):
+
         try:
             self.conn = httplib.HTTPConnection(self.host, self.port, timeout=self.timeout)
+
             route = '/members/'+str(member)+'/'+str(initiative)+'/'+str(tag)+'/'+str(timestamp)
-            print route
+
+            print "Sending POST request to:"+str(route)
+
             self.conn.request("POST", route)
+
             r = self.conn.getresponse()
+
             if r.status != 200:
                 print "Got status code: "+str(r.status)
 
@@ -114,9 +120,3 @@ class HttpInterface:
         return "HttpInterface { host : " + str(self.host) + ", port : " + str(self.port) + " }"
 
 
-if __name__ == "__main__":
-
-    h = HttpInterface('localhost', 3000)
-
-    #pp.pprint(h.fetch_initiatives())
-    pp.pprint(h.fetch_members())
