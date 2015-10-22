@@ -1,0 +1,9 @@
+('/Users/sdiemert/workspace/actua/clicker/client/dist/SPARC Connector',
+ False,
+ False,
+ 'icon.ico',
+ None,
+ [],
+ None,
+ False,
+ 1445473211)
