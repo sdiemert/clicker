@@ -42,12 +42,15 @@ class HttpInterface:
             self.conn.close()
             return None
 
-    def send_data(self, member, initiative, tag, timestamp, user="", passwd=""):
+    def send_data(self, member, initiative, tag, timestamp, user, passwd=""):
 
         try:
             self.conn = httplib.HTTPConnection(self.host, self.port, timeout=self.timeout)
 
             route = '/members/'+str(member)+'/'+str(initiative)+'/'+str(tag)+'/'+str(timestamp)
+
+            if user:
+                route += "/"+user
 
             print "Sending POST request to:"+str(route)
 
@@ -98,7 +101,7 @@ class HttpInterface:
             tmpInit = Initiative(str(i), str(inits[i]['name']), tags=list())
 
             for t in inits[i]['tags']:
-                tmpInit.add_tag(Tag(str(t['_id']), str(t['name'])))
+                tmpInit.add_tag(Tag(str(t['id']), str(t['name'])))
 
             toReturn.append(tmpInit)
 
@@ -112,7 +115,7 @@ class HttpInterface:
         toReturn = list()
 
         for m in members:
-            toReturn.append(Member(m['_id'], m['name'], m['city'], m['province']))
+            toReturn.append(Member(m['id'], m['name'], m['city'], m['province']))
 
         return toReturn
 

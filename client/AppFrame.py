@@ -38,6 +38,8 @@ class AppFrame(wx.Frame):
         self.member_label = wx.StaticText(self.display, wx.ID_ANY, "Actua Member:")
 
         self.output = wx.TextCtrl(self.display, wx.ID_ANY, size=(500, 600), style=wx.TE_MULTILINE)
+        self.user_label =  wx.StaticText(self.display, wx.ID_ANY, "Username (leave blank if none):")
+        self.user = wx.TextCtrl(self.display, wx.ID_ANY, size=(100, 25))
         # self.remove_button = wx.Button(self.display, wx.ID_ANY, "Remove Items")
 
         self.title.SetFont(wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL))
@@ -48,7 +50,7 @@ class AppFrame(wx.Frame):
         self.initiatives.Disable()
         self.members.Disable()
 
-        self.list = AutoWidthListCtrl(self.display, size=(400, 400))
+        self.list = AutoWidthListCtrl(self.display, size=(400, 300))
         self.generate_list_cols()
 
         wrapper = wx.BoxSizer(wx.VERTICAL)
@@ -81,6 +83,8 @@ class AppFrame(wx.Frame):
         data.Add(self.initiatives, 0, wx.ALL, 5)
         data.Add(self.member_label, 0, wx.ALL, 5)
         data.Add(self.members, 0, wx.ALL, 5)
+        data.Add(self.user_label, 0, wx.ALL, 5)
+        data.Add(self.user, 0, wx.ALL, 5)
         data.Add(data_control)
 
         feedback.Add(self.output, 0, wx.ALL, 5)
@@ -139,7 +143,12 @@ class AppFrame(wx.Frame):
 
     def _on_http_action(self, event):
         print "HTTP Action"
-        self.controller.send_data()
+        username = self.user.GetValue()
+
+        if username == "":
+            username = None
+
+        self.controller.send_data(username)
         pass
 
     def add_list_item(self, val):

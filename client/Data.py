@@ -16,6 +16,7 @@ class Data:
 
         self.initiative = None
         self.tag = None
+        self.user = None
 
     def is_complete(self):
 
@@ -50,6 +51,7 @@ class Data:
         s += "action:"+str(self.action)+", "
         s += "init:"+str(self.initiative)+", "
         s += "tag:"+str(self.tag)+", "
+        s += "username:"+str(self.tag)+", "
         s += "min:"+str(self.min)+", "
         s += "hour:"+str(self.hour)+", "
         s += "day:"+str(self.day)+", "

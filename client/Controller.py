@@ -142,7 +142,7 @@ class Controller:
 
         return None
 
-    def send_data(self):
+    def send_data(self, username):
         self.apply_init_to_data(self.view.initiatives.GetValue(), self.data)
 
         member = self.get_member_from_name(self.view.members.GetValue())
@@ -150,4 +150,4 @@ class Controller:
         print member
 
         for d in self.data:
-            self.http.send_data(member.get_id(), d.initiative.get_id(), d.tag.get_id(),d.getUTCSeconds())
+            self.http.send_data(member.get_id(), d.initiative.get_id(), d.tag.get_id(),d.getUTCSeconds(), username)
